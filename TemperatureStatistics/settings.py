@@ -76,12 +76,12 @@ WSGI_APPLICATION = 'TemperatureStatistics.wsgi.application'
 
 DATABASES = {
     'default': {
-        # 'ENGINE': 'django.db.backends.mysql',
-        # 'NAME': 'TemperatureStatistics',
-        # 'USER': 'root',
-        # 'PASSWORD': 'xxxxx',
-        # 'HOST': 'xx.xx.xx.xx',
-        # 'PORT': '3306',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'TemperatureStatistics',
+        'USER': 'root',
+        'PASSWORD': '1qaz@WSX',
+        'HOST': '47.116.65.85',
+        'PORT': '3306',
     }
 }
 
