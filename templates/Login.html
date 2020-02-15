@@ -59,6 +59,9 @@
                             sessionStorage["teamName"] = result.teamName;
                             window.location.href='/TemperatureReporter/TemperatureRecorder/';
                         }
+                        else {
+                            alert(result.respMsg)
+                        }
                     },
                     //失败/超时
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
