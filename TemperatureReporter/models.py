@@ -23,6 +23,7 @@ class Employees(models.Model):
     employeePwd = models.CharField(max_length=15)
     teamId = models.CharField(max_length=50)
     teamName = models.CharField(max_length=50)
+    employeeType = models.IntegerField()
 
 
 class SubmitRecord(models.Model):
