@@ -6,7 +6,7 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
             integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
             crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
@@ -62,55 +62,49 @@
 <table id="example" class="table table-striped table-dark" cellpadding="100rem">
     <thead>
     <tr>
-        <th scope="col">#</th>
         <th scope="col">员编</th>
         <th scope="col">体温</th>
         <th scope="col">记录人</th>
     </tr>
     </thead>
     <tbody>
-    <tr>
-        <th scope="row">1</th>
-        <td>666888</td>
-        <td>37</td>
-        <td>123456</td>
-    </tr>
+{#    <tr>#}
+{#        <td>666888</td>#}
+{#        <td>37</td>#}
+{#        <td>123456</td>#}
+{#    </tr>#}
 
 
     </tbody>
 </table>
+
 <script src="{% static 'bootstrap/js/jquery-3.4.1.min.js' %}"></script>
 <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'bootstrap/js/popper.min.js' %}"></script>
 
-<script>
-function setupData() {
-    $(document).ready(function () {
-        let result = {
-            "ajax": {
-                // "url": "static/objects2.txt", // This works for a static file
-                "url": "./data", // This now also works
-                "dataType": "json",
-                "dataSrc": "data",
-                "contentType":"application/json"
-            },
-            "columns": [
-                {"data": "employeeId"},
-                {"data": "employeeName"},
-                {"data": "temperature"},
-                {"data": "recorderName"},
-                {"data": "remark"}
-            ]
-        }
-        $('#example').DataTable(result);
-    });
-}
+<script type="text/javascript">
+    server = 'http://172.0.0.1:8000/'
+    setupData = function () {
+        $.ajax({
+            {#url: server + 'static/data.json',#}
+            url: 'http://127.0.0.1:8000/TemperatureReporter/queryTeamTemperatureRecords',
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                //方法中传入的参数data为后台获取的数据
+                for (i in data.recordList) //data.data指的是数组，数组里是5个对象，i为数组的索引
+                {
+                    var tr;
+                    tr = '<td>' + data.recordList[i].employeeId + '</td>' + '<td>' + data.recordList[i].temperature + '</td>' + '<td>' + data.recordList[i].remark + '</td>'
+                    $("#example").append('<tr>' + tr + '</tr>')
+                }
+            }
+        })
+    }
 
-$( window ).on( "load", setupData );
+    $(document).ready(setupData);
+    {#$(window).on("rea", setupData);#}
 
 </script>
-<script src="{% static '/bootstrap/js/bootstrap.min.js' %}"></script>
-<script src="{% static '/bootstrap/js/jquery-3.4.1.slim.min.js' %}"></script>
-<script src="{% static '/bootstrap/js/popper.min.js' %}"></script>
 </body>
 </html>
