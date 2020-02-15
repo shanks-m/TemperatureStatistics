@@ -128,4 +128,6 @@ STATICFILES_DIRS = (
     ('css', os.path.join(STATIC_ROOT, 'css')),
     ('js', os.path.join(STATIC_ROOT, 'js')),
     ('img', os.path.join(STATIC_ROOT, 'img')),
+    ('bootstrap', os.path.join(STATIC_ROOT, 'bootstrap')),
+
 )
