@@ -118,29 +118,41 @@
         $('#recordModal #employeeId')[0].innerText = activedItemInfo[0];
     })
 
-    server = 'http://127.0.0.1:8000/';
     loadTemperatureInfos = function () {
         $.ajax({
-            {#url: server + 'static/data.json',#}
-            url: 'http://127.0.0.1:8000/TemperatureReporter/queryTeamTemperatureRecords',
+            url: '/TemperatureReporter/queryTeamTemperatureRecords',
             type: 'post',
             dataType: 'json',
             data: {
                 'sessionId': '??',
                 'date': $('#measureDate').val(),
                 'measureTimes': measureTimes,
-                'teamId': 'menhu',
+                'teamId': sessionStorage["teamId"],
             },
             success: function (data) {
-                //方法中传入的参数data为后台获取的数据
-                for (i in data.recordList) {
-                    var tr;
-                    tr = '<td>' + data.recordList[i].employeeId + '</td>' +
-                        '<td>' + data.recordList[i].temperature + '</td>' +
-                        '<td>' + data.recordList[i].remark + '</td>' +
-                        '<td>' + data.recordList[i].recorderName + '</td>'
-                    $("#infos").append('<tr>' + tr + '</tr>')
+                if (data.respCode == '1000') {
+                    //方法中传入的参数data为后台获取的数据
+                    for (i in data.recordList) {
+                        var tr;
+                        tr = '<td>' + data.recordList[i].employeeId + '</td>' +
+                            '<td>' + data.recordList[i].temperature + '</td>' +
+                            '<td>' + data.recordList[i].remark + '</td>' +
+                            '<td>' + data.recordList[i].recorderName + '</td>'
+                        $("#infos").append('<tr>' + tr + '</tr>')
+                    }
                 }
+                else {
+                    alert(data.respMsg);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                if (textStatus === 'timeout') {
+                    alert('请求超時');
+                    setTimeout(function () {
+                        alert('重新请求');
+                    }, 2000);
+                }
+                //alert(errorThrown);
             }
         })
     };
