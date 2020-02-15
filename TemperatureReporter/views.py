@@ -37,11 +37,6 @@ def login(request):
         return JsonResponse({'respCode': '2000', 'respMsg': s})
 
 
-def queryTeamTemperatureRecords(request):
-    str = [{"employeeId": "672964", "employeeName": "yy", "temperature": "37", "recorderName": "name", "remark": "备注"}]
-    return JsonResponse({'respCode': '1001', 'respMsg': u'成功', 'recordList': str});
-
-
 def TemperatureRecorder(request):
     return render(request, 'TemperatureRecorder.html')
 
