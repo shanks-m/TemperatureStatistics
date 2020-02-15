@@ -115,25 +115,25 @@
     var setCommitGroupBtnStatus = function () {
         if (submitStatus) {
             $('#submitGroupBtnStatus').removeClass('btn-primary').addClass('btn-success');
-            $('#submitGroupBtnStatus')[0].value = '已提交';
+            $('#submitGroupBtnStatus')[0].innerText = '已提交';
             return false;
         }
 
         if ($.isEmptyObject(temperatureRecordedFlag)) {
             $('#submitGroupBtnStatus').removeClass('btn-primary').addClass('btn-secondary')
-            $('#submitGroupBtnStatus')[0].value = '未提交';
+            $('#submitGroupBtnStatus')[0].innerText = '未提交';
             return false;
         }
 
         for (let i in temperatureRecordedFlag) {
             if (!temperatureRecordedFlag[i]) {
                 $('#submitGroupBtnStatus').removeClass('btn-primary').addClass('btn-secondary')
-                $('#submitGroupBtnStatus')[0].value = '未提交';
+                $('#submitGroupBtnStatus')[0].innerText = '未提交';
                 return false;
             }
         }
         $('#submitGroupBtnStatus').removeClass('btn-secondary').addClass('btn-primary')
-        $('#submitGroupBtnStatus')[0].value = '未提交';
+        $('#submitGroupBtnStatus')[0].innerText = '未提交';
         return true;
     }
 
