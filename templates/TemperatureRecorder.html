@@ -35,7 +35,7 @@
 <br></br>
 
 
-<div id="btnMeasureTimes1" class="btn-group" data-toggle="buttons">
+<div id="btnMeasureTimes" class="btn-group" data-toggle="buttons">
     <label class="btn btn-default">
         <input id="morning" type="radio" name='times' class="toggle" checked="checked" value="1"> 上午
     </label>
@@ -140,8 +140,7 @@
                             '<td>' + data.recordList[i].recorderName + '</td>'
                         $("#infos").append('<tr>' + tr + '</tr>')
                     }
-                }
-                else {
+                } else {
                     alert(data.respMsg);
                 }
             },
@@ -169,8 +168,7 @@
 
     $('#recordModal #recordSubmit').on('click', function () {
         $.ajax({
-            url: server + 'static/data.json',
-            url: 'http://127.0.0.1:8000/TemperatureReporter/employeeTemperatureSubmit',
+            url: '/TemperatureReporter/employeeTemperatureSubmit',
             type: 'post',
             dataType: 'json',
             data: {
@@ -179,16 +177,25 @@
                 {#"employeeName": "",#}
                 "temperature": $('#recordModal #temperature')[0].value,
                 "measureTimes": measureTimes,
-                "recorderId": "？？",
-                "recorderName": "",
+                "recorderId": sessionStorage["recorderId"],
+                "recorderName": sessionStorage["recorderName"],
                 "remark": $('#recordModal #remark')[0].value
             },
-            success: function (data) {
-                if (data.respCode == '1000') {
-                    alert(data.respMsg);
+            success: function (result) {
+                if (result.respCode == '1000') {
+                    alert(result.respMsg);
                 } else {
-                    alert(data.respMsg);
+                    alert(result.respMsg);
                 }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                if (textStatus === 'timeout') {
+                    alert('请求超時');
+                    setTimeout(function () {
+                        alert('重新请求');
+                    }, 2000);
+                }
+                //alert(errorThrown);
             }
         })
     });
