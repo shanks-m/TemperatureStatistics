@@ -12,3 +12,17 @@ class EmployeeTemperatureSubmitForm(forms.Form):
     recorderId = forms.CharField(max_length=15)
     recorderName = forms.CharField(max_length=50)
     remark = forms.CharField(max_length=512, required=False)
+
+
+class TeamTemperatureSubmitForm(forms.Form):
+    # sessionId = forms.CharField(max_length=30)
+    teamId = forms.CharField(max_length=50)
+    teamName = forms.CharField(max_length=50)
+    measureTimes = forms.CharField(max_length=11)
+
+
+class QueryTeamTemperatureRecordsForm(forms.Form):
+    # sessionId = forms.CharField(max_length=30)
+    teamId = forms.CharField(max_length=50)
+    measureDate = forms.CharField(required=False)
+    measureTimes = forms.CharField(max_length=11)

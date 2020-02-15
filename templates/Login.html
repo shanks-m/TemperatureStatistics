@@ -55,7 +55,12 @@
                     //请求成功
                     success: function (result) {
                         if (result.respCode == '1000') {
-                            alert("SUCCESS");
+                            sessionStorage["teamId"] = result.teamId;
+                            sessionStorage["teamName"] = result.teamName;
+                            window.location.href='/TemperatureReporter/TemperatureRecorder/';
+                        }
+                        else {
+                            alert(result.respMsg)
                         }
                     },
                     //失败/超时
