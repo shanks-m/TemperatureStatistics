@@ -16,6 +16,10 @@
             integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
             crossorigin="anonymous"></script>
 
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.18/css/jquery.dataTables.min.css"/>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
 
@@ -48,14 +52,14 @@
 <br></br>
 
 <div class="btn-group" role="group" aria-label="Basic example">
-  <button type="button" class="btn btn-secondary">上午</button>
-  <button type="button" class="btn btn-secondary">下午</button>
+    <button type="button" class="btn btn-secondary">上午</button>
+    <button type="button" class="btn btn-secondary">下午</button>
 </div>
 
 <br></br>
 <br></br>
 
-<table class="table table-striped table-dark" cellpadding="100rem">
+<table id="example" class="table table-striped table-dark" cellpadding="100rem">
     <thead>
     <tr>
         <th scope="col">#</th>
@@ -72,10 +76,38 @@
         <td>123456</td>
     </tr>
 
+
     </tbody>
 </table>
 <script src="{% static 'bootstrap/js/jquery-3.4.1.min.js' %}"></script>
 <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'bootstrap/js/popper.min.js' %}"></script>
+
+<script>
+function setupData() {
+    $(document).ready(function () {
+        let result = {
+            "ajax": {
+                // "url": "static/objects2.txt", // This works for a static file
+                "url": "./data", // This now also works
+                "dataType": "json",
+                "dataSrc": "data",
+                "contentType":"application/json"
+            },
+            "columns": [
+                {"data": "employeeId"},
+                {"data": "employeeName"},
+                {"data": "temperature"},
+                {"data": "recorderName"},
+                {"data": "remark"}
+            ]
+        }
+        $('#example').DataTable(result);
+    });
+}
+
+$( window ).on( "load", setupData );
+
+</script>
 </body>
 </html>
