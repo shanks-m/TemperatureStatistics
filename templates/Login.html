@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <style type="text/css">
+        body {
+            background-repeat:no-repeat;
+            text-align: center;
+        }
+        .btn {
+                background-color:rgb(83, 123, 53);
+                color: white;
+                border: 0px;
+                width: 200px;
+                height: 32px;
+                margin: 5px;
+                border-radius: 30px;
+                align-content: center;
+            }
+        #loginPwd,#employeeId {
+                width: 200px;
+                height: 32px;
+                margin: 5px;
+            }
+        form {
+            text-align: center;
+            border: transparent 2px;
+            padding:60px 30px 30px 30px;
+            width: 250px;
+            height: 200px;
+            align-content: center;
+            text-align: center;
+            opacity: 0.6;
+            margin:260px 260px 260px 300px;
+            }
+        #tit{
+             color: black;
+            }
+        </style>
+        <script>
+            function NotNull() {
+                var userName=document.getElementById("employeeId");
+                var password=document.getElementById("loginPwd");
+                if(userName.value=="")
+                {
+                  alert("员编不得为空！");
+                  return false;
+                }
+                if(password.value=="")
+                {
+                    alert("密码不得为空！");
+                    return false;
+                }else
+                {
+                    return true;
+                }
+            }
+        </script>
+</head>
+<body>
+    <div>
+        <form action="/TemperatureReporter/login" method="GET" onsubmit="return NotNull();">
+            <h1>健康信息统计</h1>
+            <br/>
+            <br/>
+            <input id="employeeId" name="employeeId" placeholder="员编"/>
+            <br/>
+            <input id="loginPwd" name="loginPwd" type="password" placeholder="密码"/>
+            <br/>
+            <input class="btn" type="submit"  value="登录" />
+        </form>
+    </div>
+</body>
+</html>

@@ -6,7 +6,7 @@ from django.http import HttpResponse
 
 
 def sayHello(request):
-    return render(request, 'TemperatureRecorder.html')
+    return render(request, 'Login.html')
 
 
 def login(request):
