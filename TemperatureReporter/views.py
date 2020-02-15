@@ -26,8 +26,8 @@ def loginPage(request):
 
 def login(request):
     try:
-        employee = Employees.objects.get(employeeId=request.GET.get('employeeId'))
-        if employee.employeePwd == request.GET.get('loginPwd'):
+        employee = Employees.objects.get(employeeId=request.POST.get('employeeId'))
+        if employee.employeePwd == request.POST.get('loginPwd'):
             return JsonResponse({'respCode': '1000', 'respMsg': '成功', 'teamId': employee.teamId, 'teamName': employee.teamName})
         else:
             s = '密码错误'
