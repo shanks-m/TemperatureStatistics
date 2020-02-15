@@ -20,3 +20,10 @@ class GetEmployeeTemperatureForm(forms.Form):
     teamId = forms.CharField(max_length=50)
     measureTimes = forms.CharField(max_length=11)
     # date = forms.CharField(max_length=50)
+
+
+class TeamTemperatureSubmit(forms.Form):
+    # sessionId = forms.CharField(max_length=30)
+    teamId = forms.CharField(max_length=50)
+    teamName = forms.CharField(max_length=50)
+    measureTimes = forms.CharField(max_length=11)

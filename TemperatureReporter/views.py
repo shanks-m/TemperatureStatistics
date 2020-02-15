@@ -4,13 +4,12 @@ import time
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 
-from TemperatureReporter.forms import EmployeeTemperatureSubmitForm, GetEmployeeTemperatureForm
+from TemperatureReporter.forms import EmployeeTemperatureSubmitForm, GetEmployeeTemperatureForm,TeamTemperatureSubmit
 from TemperatureReporter.models import Employees, Temperatures, SubmitRecord
 import datetime
 from django.http import HttpResponse
 from django.core import serializers
 from django.http import JsonResponse
-
 
 
 # Create your views here.
@@ -28,7 +27,8 @@ def login(request):
     try:
         employee = Employees.objects.get(employeeId=request.POST.get('employeeId'))
         if employee.employeePwd == request.POST.get('loginPwd'):
-            return JsonResponse({'respCode': '1000', 'respMsg': '成功', 'teamId': employee.teamId, 'teamName': employee.teamName})
+            return JsonResponse(
+                {'respCode': '1000', 'respMsg': '成功', 'teamId': employee.teamId, 'teamName': employee.teamName})
         else:
             s = '密码错误'
             # html = '<html><head></head><body><h1> %s </h1></body></html>' % (s)
@@ -96,13 +96,14 @@ def getEmployeeTemperatureByTeamId(request):
     # temperatures = serializers.serialize("json", temperatures)
     # return JsonResponse({'respCode': '1000', 'respMsg': '成功', 'temperatures': temperatures})
 def queryTeamTemperatureRecords(request):
-    str = [{"employeeId":"672964","employeeName":"yy","temperature":"37","recorderName":"name","remark":"备注"}]
+    str = [{"employeeId": "672964", "employeeName": "yy", "temperature": "37", "recorderName": "name", "remark": "备注"}]
     return JsonResponse({'respCode': '1001', 'respMsg': u'成功', 'recordList': str});
 
 
 
 def TemperatureRecorder(request):
     return render(request, 'TemperatureRecorder.html')
+
 
 # 员工体温数据提交测试页
 def employeeSubmitTest(request):
@@ -138,6 +139,12 @@ def employeeTemperatureSubmit(request):
     recorderId = form.cleaned_data['recorderId']
     recorderName = form.cleaned_data['recorderName']
     remark = form.cleaned_data['remark']
+
+    # 参数不合法（体温和备注不能同时为空）
+    if not (temperature or remark):
+        respJson['respCode'] = '1002'
+        respJson['respMsg'] = '参数不合法[TR-1002]'
+        return HttpResponse(json.dumps(respJson))
 
     try:
         # 1. 校验session
@@ -193,6 +200,91 @@ def employeeTemperatureSubmit(request):
         return HttpResponse(json.dumps(respJson))
 
     except Exception as e:  # 异常
+        respJson['respCode'] = '2000'
+        respJson['respMsg'] = '系统异常[TR-2000]'
+        return HttpResponse(json.dumps(respJson))
+
+
+# 小组体温数据提交测试页
+def teamSubmitTest(request):
+    return render(request, 'TeamSubmitTest.html')
+
+
+# 小组体温数据提交接口
+def teamTemperatureSubmit(request):
+    respJson = {}
+    respJson['respCode'] = '1000'
+    respJson['respMsg'] = '提交成功'
+
+    # 不支持get
+    if not request.method == 'POST':
+        respJson['respCode'] = '1001'
+        respJson['respMsg'] = '系统异常[TR-1001]'
+        return HttpResponse(json.dumps(respJson))
+
+    form = TeamTemperatureSubmit(request.POST)
+
+    # 参数不合法（是否必传 长度是否合法）
+    if not form.is_valid():
+        respJson['respCode'] = '1002'
+        respJson['respMsg'] = '参数不合法[TR-1002]'
+        return HttpResponse(json.dumps(respJson))
+
+    # sessionId = form.cleaned_data['sessionId']
+    teamId = form.cleaned_data['teamId']
+    teamName = form.cleaned_data['teamName']
+    measureTimes = form.cleaned_data['measureTimes']  # 测量第次
+
+    try:
+        # 1. 校验session
+
+        # 2. 校验当前team当前第次是否已是提交状态，如已提交，则不可重复提交
+        teamSubmitRecord = SubmitRecord.objects.filter(teamId=teamId, teamName=teamName, submitTimes=measureTimes,
+                                                       submitDate=time.strftime('%Y-%m-%d',
+                                                                                time.localtime(time.time())))
+        if teamSubmitRecord.exists():
+            respJson['respCode'] = '1003'
+            respJson['respMsg'] = '小组记录已提交[TR-1003]'
+            return HttpResponse(json.dumps(respJson))
+
+        # 3. 校验组内成员是否都已提交
+        # 3.1 查找所有组成员
+        teamMembers = Employees.objects.filter(teamId=teamId, teamName=teamName)
+        if not teamMembers.exists():
+            respJson['respCode'] = '1004'
+            respJson['respMsg'] = '小组不存在[TR-1004]'
+            return HttpResponse(json.dumps(respJson))
+
+        # 3.2 查找当前日期 当前第次，员工体温记录是否都存在。都存在，且都合法，才可提交组数据。
+        isValid = True
+        try:
+            for memeber in teamMembers:
+                employeeSubmitRecord = Temperatures.objects.get(employeeId=memeber.employeeId,
+                                                                measureTimes=measureTimes,
+                                                                measureDate=time.strftime('%Y-%m-%d',
+                                                                                          time.localtime(time.time())))
+                if employeeSubmitRecord.temperature or employeeSubmitRecord.remark:
+                    isValid = True
+                else:
+                    isValid = False
+                    break
+
+        except Exception as e:
+            isValid = False
+
+        if not isValid:
+            respJson['respCode'] = '1005'
+            respJson['respMsg'] = '请补全组内所有员工体温或备注信息后再提交[TR-1005]'
+            respJson['submitStatus'] = 0
+            return HttpResponse(json.dumps(respJson))
+
+        # 4. 提交小组体温数据
+        SubmitRecord.objects.create(teamId=teamId, teamName=teamName, submitTimes=measureTimes,
+                                    submitDate=time.strftime('%Y-%m-%d', time.localtime(time.time())))
+        respJson['submitStatus'] = 1
+        return HttpResponse(json.dumps(respJson))
+
+    except Exception as e:
         respJson['respCode'] = '2000'
         respJson['respMsg'] = '系统异常[TR-2000]'
         return HttpResponse(json.dumps(respJson))
