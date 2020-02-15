@@ -75,7 +75,7 @@
             <div><label>备注：</label><input type="text" id="remark"></div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary">确定</button>
+                <button id="recordSubmit" type="button" data-dismiss="modal" class="btn btn-primary">确定</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -146,10 +146,39 @@
     };
 
     {#["672964	37	备注	name"]#}
-    var activedItemInfo = null;
+    var activedItemInfo = [];
     $('#infos tbody').on('click', 'tr', function (e) {
-        activedItemInfo = $(this)[0].innerText.split(" ");
+        var tr = $(this)[0];
+        for (var i = 0; i < tr.cells.length; i++) {
+            activedItemInfo[i] = (tr.cells[i].innerHTML);
+        }
         $('#recordModal').modal('show')
+    });
+
+    $('#recordModal #recordSubmit').on('click', function () {
+        $.ajax({
+            url: server + 'static/data.json',
+            url: 'http://127.0.0.1:8000/TemperatureReporter/employeeTemperatureSubmit',
+            type: 'post',
+            dataType: 'json',
+            data: {
+                "sessionId": "??",
+                "employeeId": $('#recordModal #employeeId')[0].innerText,
+                {#"employeeName": "",#}
+                "temperature": $('#recordModal #temperature')[0].value,
+                "measureTimes": measureTimes,
+                "recorderId": "？？",
+                "recorderName": "",
+                "remark": $('#recordModal #remark')[0].value
+            },
+            success: function (data) {
+                if (data.respCode == '1000') {
+                    alert(data.respMsg);
+                } else {
+                    alert(data.respMsg);
+                }
+            }
+        })
     });
 
     var initData = function () {
