@@ -64,15 +64,11 @@
     <tr>
         <th scope="col">员编</th>
         <th scope="col">体温</th>
+        <th scope="col">备注</th>
         <th scope="col">记录人</th>
     </tr>
     </thead>
     <tbody>
-{#    <tr>#}
-{#        <td>666888</td>#}
-{#        <td>37</td>#}
-{#        <td>123456</td>#}
-{#    </tr>#}
 
 
     </tbody>
@@ -95,7 +91,10 @@
                 for (i in data.recordList) //data.data指的是数组，数组里是5个对象，i为数组的索引
                 {
                     var tr;
-                    tr = '<td>' + data.recordList[i].employeeId + '</td>' + '<td>' + data.recordList[i].temperature + '</td>' + '<td>' + data.recordList[i].remark + '</td>'
+                    tr = '<td>' + data.recordList[i].employeeId + '</td>' +
+                        '<td>' + data.recordList[i].temperature + '</td>' +
+                        '<td>' + data.recordList[i].remark + '</td>' +
+                        '<td>' + data.recordList[i].recorderName + '</td>'
                     $("#example").append('<tr>' + tr + '</tr>')
                 }
             }
