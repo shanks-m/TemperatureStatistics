@@ -10,7 +10,7 @@ urlpatterns = [
     path('employeeSubmitTest', views.employeeSubmitTest, name='employeeSubmitTest'),
     path('teamSubmitTest', views.teamSubmitTest, name='teamSubmitTest'),
     path('login/', views.login, name='login'),
+    path('getEmployeeTemperatureByTeamId', views.getEmployeeTemperatureByTeamId, name='getEmployeeTemperatureByTeamId'),
     path('queryTeamTemperatureRecords/', views.queryTeamTemperatureRecords, name='login'),
     path('TemperatureRecorder/', views.TemperatureRecorder, name='TemperatureRecorder'),
-
 ]

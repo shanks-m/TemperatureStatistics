@@ -4,8 +4,12 @@ import time
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 
-from TemperatureReporter.forms import EmployeeTemperatureSubmitForm, TeamTemperatureSubmit
+from TemperatureReporter.forms import EmployeeTemperatureSubmitForm, GetEmployeeTemperatureForm,TeamTemperatureSubmit
 from TemperatureReporter.models import Employees, Temperatures, SubmitRecord
+import datetime
+from django.http import HttpResponse
+from django.core import serializers
+from django.http import JsonResponse
 
 
 # Create your views here.
@@ -35,9 +39,66 @@ def login(request):
         return JsonResponse({'respCode': '2000', 'respMsg': s})
 
 
+def getEmployeeTemperatureByTeamId(request):
+    respJson = {'respCode': '1000', 'respMsg': '提交成功'}
+
+    # 不支持get
+    if not request.method == 'POST':
+        respJson['respCode'] = '1001'
+        respJson['respMsg'] = '系统异常[TR-1001]'
+        return JsonResponse(respJson)
+
+    form = GetEmployeeTemperatureForm(request.POST)
+
+    # 参数不合法（是否必传 长度是否合法）
+    if not form.is_valid():
+        respJson['respCode'] = '1002'
+        respJson['respMsg'] = '参数不合法[TR-1002]'
+        return JsonResponse(respJson)
+
+    # sessionId = form.cleaned_data['sessionId']
+    teamId = form.cleaned_data['teamId']
+    measureTimes = form.cleaned_data['measureTimes']  # 测量第次
+    # date = form.cleaned_data['date']
+
+    try:
+        # 根据teamId获取员工列表
+        employees = Employees.objects.filter(teamId=teamId)
+        # employeeIdList = serializers.serialize("json", employeeIdList)
+        # if not employeeIdList.exists():
+        #     respJson['respCode'] = '1003'
+        #     respJson['respMsg'] = '小组不存在[TR-1003]'
+        #     return HttpResponse(respJson)
+        # respJson['employeeIdList'] = employeeIdList
+        # recordList = []
+        submitStatus = 1
+        for employee in employees:
+            employeeId = employee.employeeId
+            print(employee.employeeId)
+            temperatureRecords = Temperatures.objects.filter(employeeId=employeeId, measureTimes=measureTimes)
+            respJson['submitStatus'] = submitStatus
+            temperatureRecords = serializers.serialize("json", temperatureRecords)
+            respJson['recordList'] = temperatureRecords
+        return JsonResponse(respJson)
+    except Exception as e:
+        print(e)
+        respJson['respCode'] = '2000'
+        respJson['respMsg'] = '系统异常[TR-2000]'
+        return JsonResponse(respJson)
+
+    # try:
+    #
+    # except Exception as e:  # 异常
+    #     respJson['respCode'] = '2000'
+    #     respJson['respMsg'] = '系统异常[TR-2000]'
+    #     return HttpResponse(json.dumps(respJson))
+    # temperatures = Temperatures.objects.all()
+    # temperatures = serializers.serialize("json", temperatures)
+    # return JsonResponse({'respCode': '1000', 'respMsg': '成功', 'temperatures': temperatures})
 def queryTeamTemperatureRecords(request):
     str = [{"employeeId": "672964", "employeeName": "yy", "temperature": "37", "recorderName": "name", "remark": "备注"}]
     return JsonResponse({'respCode': '1001', 'respMsg': u'成功', 'recordList': str});
+
 
 
 def TemperatureRecorder(request):

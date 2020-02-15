@@ -14,6 +14,14 @@ class EmployeeTemperatureSubmitForm(forms.Form):
     remark = forms.CharField(max_length=512, required=False)
 
 
+# 员工体温记录获取form
+class GetEmployeeTemperatureForm(forms.Form):
+    # sessionId = forms.CharField(max_length=30)
+    teamId = forms.CharField(max_length=50)
+    measureTimes = forms.CharField(max_length=11)
+    # date = forms.CharField(max_length=50)
+
+
 class TeamTemperatureSubmit(forms.Form):
     # sessionId = forms.CharField(max_length=30)
     teamId = forms.CharField(max_length=50)
