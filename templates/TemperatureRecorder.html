@@ -118,18 +118,18 @@
         $('#recordModal #employeeId')[0].innerText = activedItemInfo[0];
     })
 
-    server = 'http://172.0.0.1:8000/';
+    server = 'http://127.0.0.1:8000/';
     loadTemperatureInfos = function () {
         $.ajax({
             {#url: server + 'static/data.json',#}
             url: 'http://127.0.0.1:8000/TemperatureReporter/queryTeamTemperatureRecords',
-            type: 'get',
+            type: 'post',
             dataType: 'json',
             data: {
                 'sessionId': '??',
                 'date': $('#measureDate').val(),
                 'measureTimes': measureTimes,
-                'teamId': '123',
+                'teamId': 'menhu',
             },
             success: function (data) {
                 //方法中传入的参数data为后台获取的数据
