@@ -62,20 +62,22 @@
     </tbody>
 </table>
 
+<button id="submitGroupBtnStatus" type="button" class="btn btn-secondary">Primary</button>
+
 <!-- 模态框（Modal） -->
 <div class="modal fade" id="recordModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h4 class="modal-title" id="myModalLabel">温度录入</h4>
+                <h4 class="modal-title align-middle" id="myModalLabel">温度录入</h4>
             </div>
             <div><label>员编：</label><label id="employeeId"></label></div>
             <div><label>体温：</label><input type="text" id="temperature"></div>
             <div><label>备注：</label><input type="text" id="remark"></div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button id="recordSubmit" type="button" data-dismiss="modal" class="btn btn-primary">确定</button>
+                <button id="submitEmployeeInfo" type="button" data-dismiss="modal" class="btn btn-primary">确定</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -93,29 +95,53 @@
         $('#measureDate')[0].innerText = date.toLocaleDateString();
     };
 
-    measureTimes = '1';
+    measureTimes = '1';//代表上午或者下午测量
     $(document).ready(function () {
+        //todo  根据当前时间自动切换上午或者下午,各个地方表单校验，返回结果异常处理
+
         $('input[type=radio][name=times]').change(function () {
             if (this.value == '1') {
                 measureTimes = '1';
-                {#alert("Allot Thai Gayo Bhai");#}
+                loadTemperatureInfos();
             } else if (this.value == '2') {
                 measureTimes = '2';
-                {#alert("Transfer Thai Gayo");#}
+                loadTemperatureInfos();
             }
         });
     });
 
+    var temperatureRecordedFlag = {};//代表当前用户是否记录过温度；
+    var setCommitGroupBtnStatus = function () {
+        if ($.isEmptyObject(temperatureRecordedFlag)) {
+            $('#submitGroupBtnStatus').removeClass('btn-primary').addClass('btn-secondary')
+            return false;
+        }
 
+        for (let i in temperatureRecordedFlag) {
+            if (!temperatureRecordedFlag[i]) {
+                $('#submitGroupBtnStatus').removeClass('btn-primary').addClass('btn-secondary')
+                return false;
+            }
+        }
+        $('#submitGroupBtnStatus').removeClass('btn-secondary').addClass('btn-primary')
+        return true;
+    }
+
+    var originalTemperatureInfos = [];//原始温度信息
     $('#recordModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget) // Button that triggered the modal
-        var recipient = button.data('whatever') // Extract info from data-* attributes
-        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-        var modal = $(this)
-        modal.find('.modal-title').text('New message to ' + recipient)
+        {#var button = $(event.relatedTarget) // Button that triggered the modal#}
+        {#var recipient = button.data('whatever') // Extract info from data-* attributes#}
+        $('#recordModal #employeeId')[0].innerText = activetedItemInfo.employeeId;
+        $('#recordModal #temperature')[0].value = temperatureRecordedFlag[activetedItemInfo.employeeId] ? activetedItemInfo.temperature : '';
+        $('#recordModal #remark')[0].value = temperatureRecordedFlag[activetedItemInfo.employeeId] ? activetedItemInfo.remark : '';
+    })
 
-        $('#recordModal #employeeId')[0].innerText = activedItemInfo[0];
+    $('#recordModal').on('hide.bs.modal', function (event) {
+        $('#recordModal #employeeId')[0].innerText = '';
+        $('#recordModal #temperature')[0].value = '';
+        $('#recordModal #remark')[0].value = '';
+
+        loadTemperatureInfos();
     })
 
     loadTemperatureInfos = function () {
@@ -131,15 +157,29 @@
             },
             success: function (data) {
                 if (data.respCode == '1000') {
-                    //方法中传入的参数data为后台获取的数据
-                    for (i in data.recordList) {
+                    //方法中传入的参数data为后台获取的数
+
+                    $("#infos tbody").empty();//重置列表
+
+                    originalTemperatureInfos = data.recordList;
+                    for (let i in originalTemperatureInfos) {
+                        var recordItem = originalTemperatureInfos[i];
+                        if ((!recordItem.temperature || recordItem.temperature === '') &&
+                            (!recordItem.remark || recordItem.remark === '')) {
+                            temperatureRecordedFlag[recordItem.employeeId] = false;
+                        } else {
+                            temperatureRecordedFlag[recordItem.employeeId] = true;
+                        }
+
                         var tr;
-                        tr = '<td>' + data.recordList[i].employeeId + '</td>' +
-                            '<td>' + data.recordList[i].temperature + '</td>' +
-                            '<td>' + data.recordList[i].remark + '</td>' +
-                            '<td>' + data.recordList[i].recorderName + '</td>'
-                        $("#infos").append('<tr>' + tr + '</tr>')
+                        tr = '<td>' + recordItem.employeeId + '</td>' +
+                            '<td>' + (temperatureRecordedFlag[recordItem.employeeId] ? recordItem.temperature : '尚未记录') + '</td>' +
+                            '<td>' + (temperatureRecordedFlag[recordItem.employeeId] ? recordItem.remark : '尚未记录') + '</td>' +
+                            '<td>' + (temperatureRecordedFlag[recordItem.employeeId] ? recordItem.recorderId : '尚未记录') + '</td>'
+                        $("#infos tbody").append('<tr>' + tr + '</tr>')
                     }
+
+                    setCommitGroupBtnStatus();
                 } else {
                     alert(data.respMsg);
                 }
@@ -156,31 +196,30 @@
         })
     };
 
-    {#["672964	37	备注	name"]#}
-    var activedItemInfo = [];
+    var activetedItemInfo = {};//当前被选中的用户温度信息
     $('#infos tbody').on('click', 'tr', function (e) {
-        var tr = $(this)[0];
-        for (var i = 0; i < tr.cells.length; i++) {
-            activedItemInfo[i] = (tr.cells[i].innerHTML);
-        }
+
+        var rowNum = $(this).index()
+        activetedItemInfo = originalTemperatureInfos[rowNum];
         $('#recordModal').modal('show')
     });
 
-    $('#recordModal #recordSubmit').on('click', function () {
+    $('#recordModal #submitEmployeeInfo').on('click', function () {
+        var data = {
+            "sessionId": "??",
+            "employeeId": $('#recordModal #employeeId')[0].innerText,
+            'teamId': sessionStorage["teamId"],
+            {#"employeeName": "",#}
+            "temperature": $('#recordModal #temperature')[0].value,
+            "measureTimes": measureTimes,
+            "recorderId": sessionStorage["employeeId"],
+            "remark": $('#recordModal #remark')[0].value
+        };
         $.ajax({
             url: '/TemperatureReporter/employeeTemperatureSubmit',
             type: 'post',
             dataType: 'json',
-            data: {
-                "sessionId": "??",
-                "employeeId": $('#recordModal #employeeId')[0].innerText,
-                {#"employeeName": "",#}
-                "temperature": $('#recordModal #temperature')[0].value,
-                "measureTimes": measureTimes,
-                "recorderId": sessionStorage["recorderId"],
-                "recorderName": sessionStorage["recorderName"],
-                "remark": $('#recordModal #remark')[0].value
-            },
+            data: data,
             success: function (result) {
                 if (result.respCode == '1000') {
                     alert(result.respMsg);
@@ -194,15 +233,51 @@
                     setTimeout(function () {
                         alert('重新请求');
                     }, 2000);
+                } else {
+                    alert('系统异常');
                 }
                 //alert(errorThrown);
             }
         })
     });
 
+    $('#submitGroupBtnStatus').on('click', function () {
+        var data = {
+            "sessionId": "??",
+            'teamId': sessionStorage["teamId"],
+            'teamName': sessionStorage["teamName"],
+            "measureTimes": measureTimes
+        };
+        $.ajax({
+            url: '/TemperatureReporter/teamTemperatureSubmit',
+            type: 'post',
+            dataType: 'json',
+            data: data,
+            success: function (result) {
+                if (result.respCode == '1000') {
+                    alert(result.respMsg);
+                } else {
+                    alert(result.respMsg);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                if (textStatus === 'timeout') {
+                    alert('请求超時');
+                    setTimeout(function () {
+                        alert('重新请求');
+                    }, 2000);
+                } else {
+                    alert('系统异常');
+                }
+                //alert(errorThrown);
+            }
+        })
+    })
+
     var initData = function () {
         initMeasureDate();
         loadTemperatureInfos();
+        setCommitGroupBtnStatus();
     };
 
 
