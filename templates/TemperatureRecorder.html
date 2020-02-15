@@ -62,7 +62,7 @@
     </tbody>
 </table>
 
-<button id="submitGroupBtnStatus" type="button" class="btn btn-secondary">Primary</button>
+<button id="submitGroupBtnStatus" type="button" class="btn btn-secondary"></button>
 
 <!-- 模态框（Modal） -->
 <div class="modal fade" id="recordModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -111,19 +111,29 @@
     });
 
     var temperatureRecordedFlag = {};//代表当前用户是否记录过温度；
+    var submitStatus = false;//组信息是否已经提交
     var setCommitGroupBtnStatus = function () {
+        if (submitStatus) {
+            $('#submitGroupBtnStatus').removeClass('btn-primary').addClass('btn-success');
+            $('#submitGroupBtnStatus')[0].innerText = '已提交';
+            return false;
+        }
+
         if ($.isEmptyObject(temperatureRecordedFlag)) {
             $('#submitGroupBtnStatus').removeClass('btn-primary').addClass('btn-secondary')
+            $('#submitGroupBtnStatus')[0].innerText = '未提交';
             return false;
         }
 
         for (let i in temperatureRecordedFlag) {
             if (!temperatureRecordedFlag[i]) {
                 $('#submitGroupBtnStatus').removeClass('btn-primary').addClass('btn-secondary')
+                $('#submitGroupBtnStatus')[0].innerText = '未提交';
                 return false;
             }
         }
         $('#submitGroupBtnStatus').removeClass('btn-secondary').addClass('btn-primary')
+        $('#submitGroupBtnStatus')[0].innerText = '未提交';
         return true;
     }
 
@@ -162,6 +172,7 @@
                     $("#infos tbody").empty();//重置列表
 
                     originalTemperatureInfos = data.recordList;
+                    submitStatus = data.submitStatus;
                     for (let i in originalTemperatureInfos) {
                         var recordItem = originalTemperatureInfos[i];
                         if ((!recordItem.temperature || recordItem.temperature === '') &&
@@ -277,7 +288,6 @@
     var initData = function () {
         initMeasureDate();
         loadTemperatureInfos();
-        setCommitGroupBtnStatus();
     };
 
 
