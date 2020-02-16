@@ -33,3 +33,13 @@ class SubmitRecord(models.Model):
     teamName = models.CharField(max_length=50)
     submitDate = models.DateField()
     submitTimes = models.IntegerField()
+
+
+class Session(models.Model):
+    sessionId = models.CharField(primary_key=True, max_length=50)
+    employeeId = models.CharField(max_length=15)
+    deviceId = models.CharField(max_length=50)
+    createdAt = models.DateTimeField()
+    updatedAt = models.DateTimeField()
+    expireAt = models.DateTimeField()
+
