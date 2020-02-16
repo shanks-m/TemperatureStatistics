@@ -1,13 +1,14 @@
 import json
 import time
 import logging
-
+import uuid
+import datetime
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 
 from TemperatureReporter.forms import EmployeeTemperatureSubmitForm, TeamTemperatureSubmitForm, \
     QueryTeamTemperatureRecordsForm
-from TemperatureReporter.models import Employees, Temperatures, SubmitRecord
+from TemperatureReporter.models import Employees, Temperatures, SubmitRecord, Session
 
 
 # Create your views here.
@@ -28,12 +29,21 @@ def login(request):
     try:
         employee = Employees.objects.get(employeeId=request.POST.get('employeeId'))
         if employee.employeePwd == request.POST.get('loginPwd'):
+            uid = str(uuid.uuid4())
+            tmpid = ''.join(uid.split('-'))
+            session = Session()
+            session.createdAt = datetime.datetime.now()
+            session.expireAt = session.createdAt + datetime.timedelta(minutes=15)
+            session.sessionId = tmpid
+            session.employeeId = employee.employeeId
+            session.save()
             return JsonResponse(
                 {'respCode': '1000',
                  'respMsg': '成功',
                  'employeeId': employee.employeeId,
                  'teamId': employee.teamId,
-                 'teamName': employee.teamName})
+                 'teamName': employee.teamName,
+                 'sessionId': tmpid})
         else:
             s = '密码错误'
             return JsonResponse({'respCode': '1001', 'respMsg': s})
