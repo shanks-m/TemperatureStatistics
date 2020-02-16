@@ -33,17 +33,24 @@
 
     <div class="panel panel-info">
         <div class="panel-body">
-            <h3><span class="badge badge-success" id='measureDate'></span></h3>
 
-
-            <div id="btnMeasureTimes" class="btn-group" data-toggle="buttons">
-                <label class="btn btn-success">
-                    <input id="morning" type="radio" name='times' class="toggle" checked="checked" value="1"> 上午
-                </label>
-                <label class="btn btn-success">
-                    <input id="afternoon" type="radio" name='times' class="toggle" value="2"> 下午
-                </label>
+            <div class="row justify-content-between align-items-center input-submit">
+                <div class="col-xs-1">
+                    <h3><span class="badge badge-success" id='measureDate'></span></h3>
+                    <div id="btnMeasureTimes" class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-success">
+                            <input id="morning" type="radio" name='times' class="toggle" checked="checked" value="1"> 上午
+                        </label>
+                        <label class="btn btn-success">
+                            <input id="afternoon" type="radio" name='times' class="toggle" value="2"> 下午
+                        </label>
+                    </div>
+                </div>
+                <div class="col-xs-1" style="">
+                    <button id="submitGroupBtnStatus" type="button" class="btn btn-secondary"></button>
+                </div>
             </div>
+
         </div>
     </div>
 
@@ -60,8 +67,6 @@
 
         </tbody>
     </table>
-
-    <button id="submitGroupBtnStatus" type="button" class="btn btn-secondary"></button>
 
 </div>
 
@@ -133,8 +138,7 @@
         if (submitStatus) {
             $('#submitGroupBtnStatus').addClass('btn btn-success');
             $('#submitGroupBtnStatus')[0].innerText = '已提交';
-
-            {#$('#infos *[onclick]').removeAttr('onclick').off('click');#}
+            $('#submitGroupBtnStatus').prop('disabled', true);
 
             return false;
         }
@@ -142,6 +146,7 @@
         if ($.isEmptyObject(temperatureRecordedFlag)) {
             $('#submitGroupBtnStatus').addClass('btn btn-secondary')
             $('#submitGroupBtnStatus')[0].innerText = '未提交';
+            $('#submitGroupBtnStatus').prop('disabled', true);
             return false;
         }
 
@@ -149,11 +154,14 @@
             if (!temperatureRecordedFlag[i]) {
                 $('#submitGroupBtnStatus').addClass('btn-secondary')
                 $('#submitGroupBtnStatus')[0].innerText = '未提交';
+                $('#submitGroupBtnStatus').prop('disabled', true);
                 return false;
             }
         }
+
         $('#submitGroupBtnStatus').addClass('btn-primary')
         $('#submitGroupBtnStatus')[0].innerText = '未提交';
+        $('#submitGroupBtnStatus').prop('disabled', false);
         return true;
     }
 
