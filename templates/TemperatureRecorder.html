@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>hello</title>
+    <title>员工体温统计</title>
 
     {#    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"#}
     {#          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">#}
@@ -16,6 +16,12 @@
     {#            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"#}
     {#            crossorigin="anonymous"></script>#}
 
+    <style type="text/css">
+        #temperature, #remark, #employeeId {
+            text-align: left;
+            outline: none;
+        }
+    </style>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
@@ -74,21 +80,19 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h4 class="modal-title align-middle" id="myModalLabel">温度录入</h4>
             </div>
-            <div><label>员编：</label><label id="employeeId"></label></div>
-            <div><label>体温：</label><input type="text" id="temperature"></div>
-            <div><label>备注：</label><input type="text" id="remark"></div>
+            <div class="modal-body"><label>员编：</label><label id="employeeId"></label></div>
+            <div class="modal-body"><label>体温：</label><input type="text" id="temperature" placeholder="请输入体温"></div>
+            <div class="modal-body"><label>备注：</label><input type="text" id="remark" placeholder="请输入备注"></div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button id="submitEmployeeInfo" type="button" data-dismiss="modal" class="btn btn-primary">
+                <button type="button" data-dismiss="modal" class="btn btn-secondary">关闭</button>
+                <button id="submitEmployeeInfo" type="button" data-dismiss="modal" class="btn btn-success">
                     确定
                 </button>
             </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-    <!-- /.modal -->
+        </div>
+    </div>
 </div>
 
 
