@@ -67,9 +67,9 @@
                     //请求成功
                     success: function (result) {
                         if (result.respCode == '1000') {
-                            {#sessionStorage["teamId"] = result.teamId;#}
-                            {#sessionStorage["teamName"] = result.teamName;#}
-                            {#sessionStorage["employeeId"] = result.employeeId;#}
+                            sessionStorage["teamId"] = result.teamId;
+                            sessionStorage["teamName"] = result.teamName;
+                            sessionStorage["employeeId"] = result.employeeId;
                             setCookie('sessionId',result.sessionId)
                             window.location.href='/TemperatureReporter/temperatureRecorderPage/';
                         }
