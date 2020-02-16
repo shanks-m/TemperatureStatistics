@@ -96,11 +96,6 @@
                                   maxlength="512"></textarea>
                     </div>
                 </form>
-
-                {#                <label>员编：</label><label id="employeeId"></label>#}
-                {#                <label>体温：</label><input type="text" id="temperature" maxlength="5" placeholder="请输入体温"#}
-                {#                                         class="form-control">#}
-                {#                <label>备注：</label><textarea id="remark" placeholder="请输入备注" rows="3" maxlength="512"></textarea>#}
             </div>
             <div class="modal-footer">
                 <button type="button" data-dismiss="modal" class="btn btn-secondary">关闭</button>
@@ -267,6 +262,7 @@
 
                     afterLoadTemperatureInfo();
                 } else if (data.respCode == '7001') {
+                    alert(data.respMsg);
                     window.location.href = '/TemperatureReporter/loginPage/';
                 } else {
                     alert(data.respMsg);
@@ -321,6 +317,8 @@
                 if (result.respCode == '1000') {
                     alert(result.respMsg);//todo toast
                 } else if (result.respCode == '7001') {
+
+                    alert(result.msg);
                     window.location.href = '/TemperatureReporter/loginPage/';
                 } else {
                     alert(result.respMsg);//todo toast
@@ -357,6 +355,7 @@
                 if (result.respCode == '1000') {
                     alert(result.respMsg);
                 } else if (result.respCode == '7001') {
+                    alert(result.respMsg);
                     window.location.href = '/TemperatureReporter/loginPage/';
                 } else {
                     alert(result.respMsg);
