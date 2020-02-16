@@ -4,7 +4,7 @@ from TemperatureReporter.models import Session, Employees
 import datetime
 
 class sessionMiddleware(MiddlewareMixin):
-    def process_request(self, request):
+    def process_view(self, request, view_func, view_args, view_kwargs):
 
         # 统一验证登录
         # return None或者不写就不执行以后的操作
