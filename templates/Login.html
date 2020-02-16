@@ -70,6 +70,7 @@
                             sessionStorage["teamId"] = result.teamId;
                             sessionStorage["teamName"] = result.teamName;
                             sessionStorage["employeeId"] = result.employeeId;
+                            setCookie('employeeId', result.employeeId)
                             setCookie('sessionId',result.sessionId)
                             window.location.href='/TemperatureReporter/temperatureRecorderPage/';
                         }
@@ -95,7 +96,7 @@
                 var days = 1; //定义一天
                 var exp = new Date();
                 exp.setTime(exp.getTime() + days * 24 * 60 * 60 * 1000);
-                document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString;
+                document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString + ";path=/";
             }
         }
         function NotNull() {
