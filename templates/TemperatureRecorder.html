@@ -113,19 +113,29 @@
         $('#measureDate')[0].innerText = date.toLocaleDateString();
     };
 
-    measureTimes = '1';//代表上午或者下午测量
-    $(document).ready(function () {
-        //todo  根据当前时间自动切换上午或者下午,各个地方表单校验，返回结果异常处理
 
-        $('input[type=radio][name=times]').change(function () {
-            if (this.value == '1') {
-                measureTimes = '1';
-                loadTemperatureInfos();
-            } else if (this.value == '2') {
-                measureTimes = '2';
-                loadTemperatureInfos();
-            }
-        });
+    measureTimes = '1';//代表上午或者下午测量
+    initMeasureTimes = function () {
+        var date = new Date();
+        if (date.getHours() >= 12) {
+            measureTimes = '2';
+            $('#morning')[0].checked = false;
+            $('#afternoon')[0].checked = true;
+        } else {
+            measureTimes = '1';
+            $('#morning')[0].checked = true;
+            $('#afternoon')[0].checked = false;
+        }
+    }
+
+    $('input[type=radio][name=times]').change(function () {
+        if (this.value == '1') {
+            measureTimes = '1';
+            loadTemperatureInfos();
+        } else if (this.value == '2') {
+            measureTimes = '2';
+            loadTemperatureInfos();
+        }
     });
 
     var temperatureRecordedFlag = {};//代表当前用户是否记录过温度；
@@ -349,6 +359,7 @@
 
     var initData = function () {
         initMeasureDate();
+        initMeasureTimes();
         loadTemperatureInfos();
         initEmployee();
     };
