@@ -4,22 +4,19 @@
 <head>
     <title>员工体温统计</title>
 
-    {#    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"#}
-    {#          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">#}
-    {#    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"#}
-    {#            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"#}
-    {#            crossorigin="anonymous"></script>#}
-    {#    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"#}
-    {#            integrity="sha384{% comment %}{% endcomment %}-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"#}
-    {#            crossorigin="anonymous"></script>#}
-    {#    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"#}
-    {#            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"#}
-    {#            crossorigin="anonymous"></script>#}
-
     <style type="text/css">
-        #temperature, #remark, #employeeId {
+        #temperature {
             text-align: left;
             outline: none;
+            width: 200px;
+        }
+
+        #remark {
+            text-align: left;
+            outline: none;
+            vertical-align: top;
+            outline: none;
+            width: 200px;
         }
     </style>
 
@@ -37,7 +34,7 @@
     <span id="employee-id"></span>&nbsp&nbsp&nbsp&nbsp
     <span id="team-name"></span>
 
-    <hr />
+    <hr/>
 
     <div class="panel panel-info">
         <div class="panel-body">
@@ -82,14 +79,18 @@
             <div class="modal-header">
                 <h4 class="modal-title align-middle" id="myModalLabel">温度录入</h4>
             </div>
-            <div class="modal-body"><label>员编：</label><label id="employeeId"></label></div>
-            <div class="modal-body"><label>体温：</label><input type="text" id="temperature" placeholder="请输入体温"></div>
-            <div class="modal-body"><label>备注：</label><input type="text" id="remark" placeholder="请输入备注"></div>
+            <div class="modal-body">
+                <label>员编：</label><label id="employeeId"></label>
+            </div>
+            <div class="modal-body">
+                <label>体温：</label><input type="text" id="temperature" maxlength="5" placeholder="请输入体温">
+            </div>
+            <div class="modal-body">
+                <label>备注：</label><textarea id="remark" placeholder="请输入备注" rows="5" maxlength="512"></textarea>
+            </div>
             <div class="modal-footer">
                 <button type="button" data-dismiss="modal" class="btn btn-secondary">关闭</button>
-                <button id="submitEmployeeInfo" type="button" data-dismiss="modal" class="btn btn-success">
-                    确定
-                </button>
+                <button id="submitEmployeeInfo" type="button" data-dismiss="modal" class="btn btn-success">确定</button>
             </div>
         </div>
     </div>
