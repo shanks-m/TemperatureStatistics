@@ -125,7 +125,7 @@
 
     var temperatureRecordedFlag = {};//代表当前用户是否记录过温度；
     var submitStatus = false;//组信息是否已经提交
-    var setCommitGroupBtnStatus = function () {
+    var afterLoadTemperatureInfo = function () {
         $('#submitGroupBtnStatus').attr('class', function () {
             return $(this).attr('class').replace(/btn-\S*/g, '');
         });
@@ -133,6 +133,9 @@
         if (submitStatus) {
             $('#submitGroupBtnStatus').addClass('btn btn-success');
             $('#submitGroupBtnStatus')[0].innerText = '已提交';
+
+            $('#infos *[onclick]').removeAttr('onclick').off('click');
+
             return false;
         }
 
@@ -220,7 +223,7 @@
 
                     {#$('#infos tr:contains("Name")').addClass('my-class');#}
 
-                    setCommitGroupBtnStatus();
+                    afterLoadTemperatureInfo();
                 } else {
                     alert(data.respMsg);
                 }
@@ -246,6 +249,12 @@
     });
 
     $('#recordModal #submitEmployeeInfo').on('click', function () {
+        if (submitStatus) {
+            $('#recordModal #temperature').prop('disabled', false);
+            $('#recordModal #remark').prop('disabled', false);
+            return;
+        }
+
         var data = {
             "sessionId": "??",
             "employeeId": $('#recordModal #employeeId')[0].innerText,
