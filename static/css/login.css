@@ -1,48 +1,56 @@
-body {
-            background-repeat: no-repeat;
-            text-align: center;
-            margin: 80px 0px 80px 0px;
-        }
+/*body {*/
+/*            background-repeat: no-repeat;*/
+/*            text-align: center;*/
+/*            margin: 80px 0px 80px 0px;*/
+/*        }*/
 
-        .btn {
-            background-color: #28a745;
-            color: white;
-            border: 0px;
-            width: 200px;;
-            margin: 30px;
-            font-size: 32px;
-            border-radius: 5px;
-            align-content: center;
-            outline:none;
-        }
+/*        .btn {*/
+/*            background-color: #28a745;*/
+/*            color: white;*/
+/*            border: 0px;*/
+/*            width: 200px;;*/
+/*            margin: 30px;*/
+/*            font-size: 32px;*/
+/*            border-radius: 5px;*/
+/*            align-content: center;*/
+/*            outline:none;*/
+/*        }*/
 
-        #loginPwd, #employeeId {
-                width: 200px;
-			    margin: 30px;
-			    font-size: 32px;
-			    text-align: center;
-			    outline:none;
-        }
+/*        #loginPwd, #employeeId {*/
+/*                width: 200px;*/
+/*			    margin: 30px;*/
+/*			    font-size: 32px;*/
+/*			    text-align: center;*/
+/*			    outline:none;*/
+/*        }*/
 
-        form {
-        	display: inline-block;
-        	vertical-align: middle;
-            width: 700px;
-            height: 200px;
-            align-content: center;
-            text-align: center;
-            display: inline;
-        }
+/*        form {*/
+/*        	display: inline-block;*/
+/*        	vertical-align: middle;*/
+/*            width: 700px;*/
+/*            height: 200px;*/
+/*            align-content: center;*/
+/*            text-align: center;*/
+/*            display: inline;*/
+/*        }*/
 
-        h1{
-            color: #343a40;
-        }
+/*        h1{*/
+/*            color: #343a40;*/
+/*        }*/
 
-        div:before{
-        	content: "";
-        	display: inline-block;
-        	height: 100%;
-            width:0;
-            vertical-align: middle;
-            margin-left: -.25em;
-        }
+/*        div:before{*/
+/*        	content: "";*/
+/*        	display: inline-block;*/
+/*        	height: 100%;*/
+/*            width:0;*/
+/*            vertical-align: middle;*/
+/*            margin-left: -.25em;*/
+/*        }*/
+
+.form-signin {
+    width: 100%;
+    max-width: 330px;
+    padding: 15px;
+    margin: auto;
+    margin-top: 100px;
+}

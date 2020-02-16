@@ -73,13 +73,34 @@
                 <h4 class="modal-title align-middle" id="myModalLabel">温度录入</h4>
             </div>
             <div class="modal-body">
-                <label>员编：</label><label id="employeeId"></label>
-            </div>
-            <div class="modal-body">
-                <label>体温：</label><input type="text" id="temperature" maxlength="5" placeholder="请输入体温">
-            </div>
-            <div class="modal-body">
-                <label>备注：</label><textarea id="remark" placeholder="请输入备注" rows="3" maxlength="512"></textarea>
+
+                <form class="modal-form">
+                    <div class="form-group row">
+                        <label for="employeeId" class="col-xs-2 col-form-label">员编：</label>
+                        <div class="col-xs-10">
+                            <label type="text" readonly class="form-control-plaintext" id="employeeId"
+                                   value="6位员编"/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="temperature" class="col-xs-2 col-form-label">体温：</label>
+                        <div class="col-xs-10">
+                            <input type="number" class="form-control" id="temperature" placeholder="请输入体温（1位小数）"
+                                   maxlength="5">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-xs-2  col-form-label" for="remark">备注：</label>
+                        <textarea class=" col-xs-10 form-control" id="remark" placeholder="请输入备注" rows="3"
+                                  maxlength="512"></textarea>
+                    </div>
+                </form>
+
+                {#                <label>员编：</label><label id="employeeId"></label>#}
+                {#                <label>体温：</label><input type="text" id="temperature" maxlength="5" placeholder="请输入体温"#}
+                {#                                         class="form-control">#}
+                {#                <label>备注：</label><textarea id="remark" placeholder="请输入备注" rows="3" maxlength="512"></textarea>#}
             </div>
             <div class="modal-footer">
                 <button type="button" data-dismiss="modal" class="btn btn-secondary">关闭</button>
