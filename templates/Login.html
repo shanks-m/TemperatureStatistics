@@ -24,9 +24,8 @@
                             sessionStorage["employeeId"] = result.employeeId;
                             {#setCookie('employeeId', result.employeeId)#}
                             {#setCookie('sessionId',result.sessionId)#}
-                            window.location.href='/TemperatureReporter/temperatureRecorderPage/';
-                        }
-                        else {
+                            window.location.href = '/TemperatureReporter/temperatureRecorderPage/';
+                        } else {
                             alert(result.respMsg)
                         }
                     },
@@ -43,6 +42,7 @@
                 })
             }
         }
+
         function setCookie(name, value) {
             if (value) {
                 var days = 1; //定义一天
@@ -51,6 +51,7 @@
                 document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString + ";path=/";
             }
         }
+
         function NotNull() {
             var userName = document.getElementById("employeeId");
             var password = document.getElementById("loginPwd");

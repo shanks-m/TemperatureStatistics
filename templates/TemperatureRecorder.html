@@ -79,7 +79,7 @@
                 <label>体温：</label><input type="text" id="temperature" maxlength="5" placeholder="请输入体温">
             </div>
             <div class="modal-body">
-                <label>备注：</label><textarea id="remark" placeholder="请输入备注" rows="5" maxlength="512"></textarea>
+                <label>备注：</label><textarea id="remark" placeholder="请输入备注" rows="3" maxlength="512"></textarea>
             </div>
             <div class="modal-footer">
                 <button type="button" data-dismiss="modal" class="btn btn-secondary">关闭</button>
@@ -202,7 +202,7 @@
             type: 'post',
             dataType: 'json',
             data: {
-                'sessionId': '??',
+                {#'sessionId': '??',#}
                 'date': $('#measureDate').val(),
                 'measureTimes': measureTimes,
                 'teamId': sessionStorage["teamId"],
@@ -277,7 +277,7 @@
         }
 
         var data = {
-            "sessionId": "??",
+            {#"sessionId": "??",#}
             "employeeId": $('#recordModal #employeeId')[0].innerText,
             'teamId': sessionStorage["teamId"],
             {#"employeeName": "",#}
@@ -316,7 +316,7 @@
 
     $('#submitGroupBtnStatus').on('click', function () {
         var data = {
-            "sessionId": "??",
+            {#"sessionId": "??",#}
             'teamId': sessionStorage["teamId"],
             'teamName': sessionStorage["teamName"],
             'recorderId': sessionStorage["employeeId"],

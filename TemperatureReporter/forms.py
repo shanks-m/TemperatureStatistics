@@ -20,6 +20,7 @@ class TeamTemperatureSubmitForm(forms.Form):
     teamName = forms.CharField(max_length=50)
     recorderId = forms.CharField(max_length=15)
     measureTimes = forms.CharField(max_length=11)
+    recorderName = forms.CharField(max_length=50, required=False)
 
 
 class QueryTeamTemperatureRecordsForm(forms.Form):

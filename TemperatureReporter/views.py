@@ -13,11 +13,6 @@ from TemperatureReporter.models import Employees, Temperatures, SubmitRecord, Se
 
 # Create your views here.
 
-
-def sayHello(request):
-    return render(request, 'Login.html')
-
-
 def loginPage(request):
     return render(request, 'Login.html')
 
@@ -28,6 +23,9 @@ def login(request):
         return JsonResponse({'respCode': '1001', 'respMsg': '系统异常[TR-1001]'})
     try:
         employee = Employees.objects.get(employeeId=request.POST.get('employeeId'))
+        if employee.permission < 1:
+            s = '抱歉，暂无权限'
+            return JsonResponse({'respCode': '2000', 'respMsg': s})
         if employee.employeePwd == request.POST.get('loginPwd'):
             uid = str(uuid.uuid4())
             tmpid = ''.join(uid.split('-'))
@@ -44,8 +42,10 @@ def login(request):
                  'teamId': employee.teamId,
                  'teamName': employee.teamName,
                  'sessionId': tmpid})
-            response.set_cookie('sessionId', tmpid, expires=datetime.datetime.now() + datetime.timedelta(days=1), path='/')
-            response.set_cookie('employeeId', employee.employeeId, expires=datetime.datetime.now() + datetime.timedelta(days=1), path='/')
+            response.set_cookie('sessionId', tmpid, expires=datetime.datetime.now() + datetime.timedelta(days=1),
+                                path='/')
+            response.set_cookie('employeeId', employee.employeeId,
+                                expires=datetime.datetime.now() + datetime.timedelta(days=1), path='/')
             return response
         else:
             s = '密码错误'
@@ -58,11 +58,6 @@ def login(request):
 def TemperatureRecorder(request):
     employeeInfo = {'teamId': request.teamId, 'employeeId': request.employeeId}
     return render(request, 'TemperatureRecorder.html', {'employeeInfo': json.dumps(employeeInfo)})
-
-
-# 员工体温数据提交测试页
-def employeeSubmitTest(request):
-    return render(request, 'EmployeeSubmitTest.html')
 
 
 # 员工体温数据提交接口
@@ -164,11 +159,6 @@ def employeeTemperatureSubmit(request):
         return HttpResponse(json.dumps(respJson))
 
 
-# 小组体温数据提交测试页
-def teamSubmitTest(request):
-    return render(request, 'TeamSubmitTest.html')
-
-
 # 小组体温数据提交接口
 def teamTemperatureSubmit(request):
     respJson = {}
@@ -194,6 +184,7 @@ def teamTemperatureSubmit(request):
     teamName = form.cleaned_data['teamName']
     recorderId = form.cleaned_data['recorderId']
     measureTimes = form.cleaned_data['measureTimes']  # 测量第次
+    recorderName = form.cleaned_data['recorderName']
 
     try:
         # 1. 校验session
@@ -246,7 +237,8 @@ def teamTemperatureSubmit(request):
             return HttpResponse(json.dumps(respJson))
 
         # 5. 提交小组体温数据
-        SubmitRecord.objects.create(teamId=teamId, teamName=teamName, submitTimes=measureTimes,
+        SubmitRecord.objects.create(teamId=teamId, teamName=teamName, recorderId=recorderId, recorderName=recorderName,
+                                    submitTimes=measureTimes,
                                     submitDate=time.strftime('%Y-%m-%d', time.localtime(time.time())))
         respJson['submitStatus'] = 1
         return HttpResponse(json.dumps(respJson))
@@ -255,11 +247,6 @@ def teamTemperatureSubmit(request):
         respJson['respCode'] = '2000'
         respJson['respMsg'] = '系统异常[TR-2000]'
         return HttpResponse(json.dumps(respJson))
-
-
-# 小组体温查询接口测试页面
-def queryTeamRecordsTest(request):
-    return render(request, 'QueryTeamRecordsTest.html')
 
 
 # 小组体温查询接口
