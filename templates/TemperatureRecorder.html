@@ -27,6 +27,9 @@
 
 <div class="container">
 
+    <span id="employee-id"></span>
+    <span id="team-name"></span>
+    <br>
 
     <span class="grey" id='measureDate'></span>
 
@@ -89,6 +92,13 @@
 <script src="{% static 'bootstrap/js/bootstrap.min.js' %}" type="text/javascript"></script>
 
 <script type="text/javascript">
+
+    initEmployee = function () {
+        var employeeId = sessionStorage["employeeId"];
+        var teamName = sessionStorage["teamName"];
+        $("#employee-id")[0].innerText = employeeId;
+        $("#team-name")[0].innerText = teamName;
+    };
 
     initMeasureDate = function () {
         var date = new Date();
@@ -295,6 +305,7 @@
     var initData = function () {
         initMeasureDate();
         loadTemperatureInfos();
+        initEmployee();
     };
 
 
