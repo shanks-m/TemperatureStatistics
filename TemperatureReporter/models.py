@@ -43,4 +43,3 @@ class Session(models.Model):
     createdAt = models.DateTimeField()
     updatedAt = models.DateTimeField()
     expireAt = models.DateTimeField()
-
