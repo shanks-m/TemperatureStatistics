@@ -70,8 +70,8 @@
                             sessionStorage["teamId"] = result.teamId;
                             sessionStorage["teamName"] = result.teamName;
                             sessionStorage["employeeId"] = result.employeeId;
-                            setCookie('employeeId', result.employeeId)
-                            setCookie('sessionId',result.sessionId)
+                            {#setCookie('employeeId', result.employeeId)#}
+                            {#setCookie('sessionId',result.sessionId)#}
                             window.location.href='/TemperatureReporter/temperatureRecorderPage/';
                         }
                         else {

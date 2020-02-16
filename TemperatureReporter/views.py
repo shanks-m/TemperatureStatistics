@@ -37,13 +37,16 @@ def login(request):
             session.sessionId = tmpid
             session.employeeId = employee.employeeId
             session.save()
-            return JsonResponse(
+            response = JsonResponse(
                 {'respCode': '1000',
                  'respMsg': '成功',
                  'employeeId': employee.employeeId,
                  'teamId': employee.teamId,
                  'teamName': employee.teamName,
                  'sessionId': tmpid})
+            response.set_cookie('sessionId', tmpid, expires=datetime.datetime.now() + datetime.timedelta(days=1), path='/')
+            response.set_cookie('employeeId', employee.employeeId, expires=datetime.datetime.now() + datetime.timedelta(days=1), path='/')
+            return response
         else:
             s = '密码错误'
             return JsonResponse({'respCode': '1001', 'respMsg': s})
