@@ -27,14 +27,10 @@
 
 <div class="container">
 
-    <br></br>
-    <br></br>
 
     <span class="grey" id='measureDate'></span>
 
 
-    <br></br>
-    <br></br>
     <div id="btnMeasureTimes" class="btn-group" data-toggle="buttons">
         <label class="btn btn-default">
             <input id="morning" type="radio" name='times' class="toggle" checked="checked" value="1"> 上午
@@ -43,56 +39,50 @@
             <input id="afternoon" type="radio" name='times' class="toggle" value="2"> 下午
         </label>
     </div>
+
+
+    <table id="infos" class="table table-striped table-dark" cellpadding="100rem">
+        <thead>
+        <tr>
+            <th scope="col">员编</th>
+            <th scope="col">体温</th>
+            <th scope="col">备注</th>
+            <th scope="col">记录人</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+
+    <button id="submitGroupBtnStatus" type="button" class="btn btn-secondary"></button>
+
 </div>
 
 
-<br></br>
-<br></br>
-
-<table id="infos" class="table table-striped table-dark" cellpadding="100rem">
-    <thead>
-    <tr>
-        <th scope="col">员编</th>
-        <th scope="col">体温</th>
-        <th scope="col">备注</th>
-        <th scope="col">记录人</th>
-    </tr>
-    </thead>
-    <tbody>
-
-    </tbody>
-</table>
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="recordModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title align-middle" id="myModalLabel">温度录入</h4>
+            </div>
+            <div><label>员编：</label><label id="employeeId"></label></div>
+            <div><label>体温：</label><input type="text" id="temperature"></div>
+            <div><label>备注：</label><input type="text" id="remark"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button id="submitEmployeeInfo" type="button" data-dismiss="modal" class="btn btn-primary">
+                    确定
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+    <!-- /.modal -->
 </div>
 
-
-<button id="submitGroupBtnStatus" type="button" class="btn btn-secondary"></button>
-
-<div class="container">
-
-    <!-- 模态框（Modal） -->
-    <div class="modal fade" id="recordModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h4 class="modal-title align-middle" id="myModalLabel">温度录入</h4>
-                </div>
-                <div><label>员编：</label><label id="employeeId"></label></div>
-                <div><label>体温：</label><input type="text" id="temperature"></div>
-                <div><label>备注：</label><input type="text" id="remark"></div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button id="submitEmployeeInfo" type="button" data-dismiss="modal" class="btn btn-primary">
-                        确定
-                    </button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-        <!-- /.modal -->
-
-    </div>
-</div>
 
 <script src="{% static 'bootstrap/js/popper.min.js' %}" type="text/javascript"></script>
 <script src="{% static 'bootstrap/js/jquery-3.4.1.min.js' %}" type="text/javascript"></script>
@@ -123,26 +113,30 @@
     var temperatureRecordedFlag = {};//代表当前用户是否记录过温度；
     var submitStatus = false;//组信息是否已经提交
     var setCommitGroupBtnStatus = function () {
+        $('#submitGroupBtnStatus').attr('class', function () {
+            return $(this).attr('class').replace(/btn-\S*/g, '');
+        });
+
         if (submitStatus) {
-            $('#submitGroupBtnStatus').removeClass('btn-primary').addClass('btn-success');
+            $('#submitGroupBtnStatus').addClass('btn btn-success');
             $('#submitGroupBtnStatus')[0].innerText = '已提交';
             return false;
         }
 
         if ($.isEmptyObject(temperatureRecordedFlag)) {
-            $('#submitGroupBtnStatus').removeClass('btn-primary').addClass('btn-secondary')
+            $('#submitGroupBtnStatus').addClass('btn btn-secondary')
             $('#submitGroupBtnStatus')[0].innerText = '未提交';
             return false;
         }
 
         for (let i in temperatureRecordedFlag) {
             if (!temperatureRecordedFlag[i]) {
-                $('#submitGroupBtnStatus').removeClass('btn-primary').addClass('btn-secondary')
+                $('#submitGroupBtnStatus').addClass('btn-secondary')
                 $('#submitGroupBtnStatus')[0].innerText = '未提交';
                 return false;
             }
         }
-        $('#submitGroupBtnStatus').removeClass('btn-secondary').addClass('btn-primary')
+        $('#submitGroupBtnStatus').addClass('btn-primary')
         $('#submitGroupBtnStatus')[0].innerText = '未提交';
         return true;
     }
@@ -156,7 +150,7 @@
         $('#recordModal #remark')[0].value = temperatureRecordedFlag[activetedItemInfo.employeeId] ? activetedItemInfo.remark : '';
     })
 
-    $('#recordModal').on('hide.bs.modal', function (event) {
+    $('#recordModal').on('hidden.bs.modal', function (event) {
         $('#recordModal #employeeId')[0].innerText = '';
         $('#recordModal #temperature')[0].value = '';
         $('#recordModal #remark')[0].value = '';
@@ -174,6 +168,7 @@
                 'date': $('#measureDate').val(),
                 'measureTimes': measureTimes,
                 'teamId': sessionStorage["teamId"],
+                'recorderId': sessionStorage["employeeId"]
             },
             success: function (data) {
                 if (data.respCode == '1000') {
@@ -243,9 +238,9 @@
             data: data,
             success: function (result) {
                 if (result.respCode == '1000') {
-                    alert(result.respMsg);
+                    alert(result.respMsg);//todo toast
                 } else {
-                    alert(result.respMsg);
+                    alert(result.respMsg);//todo toast
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -267,6 +262,7 @@
             "sessionId": "??",
             'teamId': sessionStorage["teamId"],
             'teamName': sessionStorage["teamName"],
+            'recorderId': sessionStorage["employeeId"],
             "measureTimes": measureTimes
         };
         $.ajax({
@@ -280,6 +276,7 @@
                 } else {
                     alert(result.respMsg);
                 }
+                loadTemperatureInfos();
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 if (textStatus === 'timeout') {
