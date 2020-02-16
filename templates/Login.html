@@ -2,21 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>登录</title>
      <script src="https://cdn.bootcss.com/jquery/3.0.0/jquery.min.js"></script>
     <style type="text/css">
         body {
             background-repeat: no-repeat;
             text-align: center;
+            margin: 80px 0px 80px 0px;
         }
 
         .btn {
-            background-color: rgb(83, 123, 53);
+            background-color: #28a745;
             color: white;
             border: 0px;
-            width: 500px;
-			height: 80px;
-            margin: 50px;
+            width: 200px;;
+            margin: 30px;
             font-size: 32px;
             border-radius: 30px;
             align-content: center;
@@ -24,16 +25,17 @@
         }
 
         #loginPwd, #employeeId {
-                width: 500px;
-			    height: 80px;
-			    margin: 20px;
+                width: 200px;
+			    margin: 30px;
 			    font-size: 32px;
 			    text-align: center;
 			    outline:none;
         }
 
         form {
-            width: 500px;
+        	display: inline-block;
+        	vertical-align: middle;
+            width: 700px;
             height: 200px;
             align-content: center;
             text-align: center;
@@ -41,14 +43,16 @@
         }
 
         h1{
-            font-size: 50px;
             color: #343a40;
         }
 
-        div{
-            width:100%;
-            text-align: center;
-            margin-top: 260px;
+        div:before{
+        	content: "";
+        	display: inline-block;
+        	height: 100%;
+            width:0;
+            vertical-align: middle;
+            margin-left: -.25em;
         }
     </style>
     <script language="javascript">
