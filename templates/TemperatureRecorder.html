@@ -134,7 +134,7 @@
             $('#submitGroupBtnStatus').addClass('btn btn-success');
             $('#submitGroupBtnStatus')[0].innerText = '已提交';
 
-            $('#infos *[onclick]').removeAttr('onclick').off('click');
+            {#$('#infos *[onclick]').removeAttr('onclick').off('click');#}
 
             return false;
         }
@@ -161,9 +161,18 @@
     $('#recordModal').on('show.bs.modal', function (event) {
         {#var button = $(event.relatedTarget) // Button that triggered the modal#}
         {#var recipient = button.data('whatever') // Extract info from data-* attributes#}
+
         $('#recordModal #employeeId')[0].innerText = activetedItemInfo.employeeId;
         $('#recordModal #temperature')[0].value = temperatureRecordedFlag[activetedItemInfo.employeeId] ? activetedItemInfo.temperature : '';
         $('#recordModal #remark')[0].value = temperatureRecordedFlag[activetedItemInfo.employeeId] ? activetedItemInfo.remark : '';
+
+        if (submitStatus) {
+            $('#recordModal #temperature').prop('disabled', true);
+            $('#recordModal #remark').prop('disabled', true);
+        } else {
+            $('#recordModal #temperature').prop('disabled', false);
+            $('#recordModal #remark').prop('disabled', false);
+        }
     })
 
     $('#recordModal').on('hidden.bs.modal', function (event) {
@@ -224,6 +233,8 @@
                     {#$('#infos tr:contains("Name")').addClass('my-class');#}
 
                     afterLoadTemperatureInfo();
+                } else if (data.respCode == '7001') {
+                    window.location.href = '/TemperatureReporter/loginPage/';
                 } else {
                     alert(data.respMsg);
                 }
@@ -250,8 +261,6 @@
 
     $('#recordModal #submitEmployeeInfo').on('click', function () {
         if (submitStatus) {
-            $('#recordModal #temperature').prop('disabled', false);
-            $('#recordModal #remark').prop('disabled', false);
             return;
         }
 
@@ -273,6 +282,8 @@
             success: function (result) {
                 if (result.respCode == '1000') {
                     alert(result.respMsg);//todo toast
+                } else if (result.respCode == '7001') {
+                    window.location.href = '/TemperatureReporter/loginPage/';
                 } else {
                     alert(result.respMsg);//todo toast
                 }
@@ -307,6 +318,8 @@
             success: function (result) {
                 if (result.respCode == '1000') {
                     alert(result.respMsg);
+                } else if (result.respCode == '7001') {
+                    window.location.href = '/TemperatureReporter/loginPage/';
                 } else {
                     alert(result.respMsg);
                 }
