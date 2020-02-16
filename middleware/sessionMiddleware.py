@@ -34,3 +34,4 @@ class sessionMiddleware(MiddlewareMixin):
         request.employeeId = session.employeeId
         employee = Employees.objects.get(employeeId=session.employeeId)
         request.teamId = employee.teamId
+        request.teamName = employee.teamName

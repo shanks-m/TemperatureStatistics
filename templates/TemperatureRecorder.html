@@ -169,16 +169,16 @@
     })
 
     loadTemperatureInfos = function () {
+        var employeeInfo = {{ employeeInfo|safe }};
         $.ajax({
             url: '/TemperatureReporter/queryTeamTemperatureRecords',
             type: 'post',
             dataType: 'json',
             data: {
-                'sessionId': '??',
                 'date': $('#measureDate').val(),
                 'measureTimes': measureTimes,
-                'teamId': sessionStorage["teamId"],
-                'recorderId': sessionStorage["employeeId"]
+                'teamId': employeeInfo.teamId,
+                'recorderId': employeeInfo.employeeId
             },
             success: function (data) {
                 if (data.respCode == '1000') {
