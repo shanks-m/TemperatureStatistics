@@ -34,6 +34,8 @@ class SubmitRecord(models.Model):
     teamName = models.CharField(max_length=50)
     submitDate = models.DateField()
     submitTimes = models.IntegerField()
+    recorderId = models.CharField(max_length=15)
+    recorderName = models.CharField(max_length=50)
 
 
 class Session(models.Model):
