@@ -28,6 +28,9 @@ def login(request):
         return JsonResponse({'respCode': '1001', 'respMsg': '系统异常[TR-1001]'})
     try:
         employee = Employees.objects.get(employeeId=request.POST.get('employeeId'))
+        if employee.permission < 1:
+            s = '抱歉，暂无权限'
+            return JsonResponse({'respCode': '2000', 'respMsg': s})
         if employee.employeePwd == request.POST.get('loginPwd'):
             uid = str(uuid.uuid4())
             tmpid = ''.join(uid.split('-'))
