@@ -25,23 +25,24 @@
 </head>
 <body>
 
+<div class="container">
 
-<br></br>
-<br></br>
+    <br></br>
+    <br></br>
 
-<span class="grey" id='measureDate'></span>
-
-<br></br>
-<br></br>
+    <span class="grey" id='measureDate'></span>
 
 
-<div id="btnMeasureTimes" class="btn-group" data-toggle="buttons">
-    <label class="btn btn-default">
-        <input id="morning" type="radio" name='times' class="toggle" checked="checked" value="1"> 上午
-    </label>
-    <label class="btn btn-default">
-        <input id="afternoon" type="radio" name='times' class="toggle" value="2"> 下午
-    </label>
+    <br></br>
+    <br></br>
+    <div id="btnMeasureTimes" class="btn-group" data-toggle="buttons">
+        <label class="btn btn-default">
+            <input id="morning" type="radio" name='times' class="toggle" checked="checked" value="1"> 上午
+        </label>
+        <label class="btn btn-default">
+            <input id="afternoon" type="radio" name='times' class="toggle" value="2"> 下午
+        </label>
+    </div>
 </div>
 
 
@@ -61,28 +62,37 @@
 
     </tbody>
 </table>
+</div>
+
 
 <button id="submitGroupBtnStatus" type="button" class="btn btn-secondary"></button>
 
-<!-- 模态框（Modal） -->
-<div class="modal fade" id="recordModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h4 class="modal-title align-middle" id="myModalLabel">温度录入</h4>
-            </div>
-            <div><label>员编：</label><label id="employeeId"></label></div>
-            <div><label>体温：</label><input type="text" id="temperature"></div>
-            <div><label>备注：</label><input type="text" id="remark"></div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button id="submitEmployeeInfo" type="button" data-dismiss="modal" class="btn btn-primary">确定</button>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
+<div class="container">
+
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="recordModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title align-middle" id="myModalLabel">温度录入</h4>
+                </div>
+                <div><label>员编：</label><label id="employeeId"></label></div>
+                <div><label>体温：</label><input type="text" id="temperature"></div>
+                <div><label>备注：</label><input type="text" id="remark"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button id="submitEmployeeInfo" type="button" data-dismiss="modal" class="btn btn-primary">
+                        确定
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+        <!-- /.modal -->
+
+    </div>
 </div>
-<!-- /.modal -->
 
 <script src="{% static 'bootstrap/js/popper.min.js' %}" type="text/javascript"></script>
 <script src="{% static 'bootstrap/js/jquery-3.4.1.min.js' %}" type="text/javascript"></script>
