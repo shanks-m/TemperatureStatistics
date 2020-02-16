@@ -267,6 +267,7 @@
 
                     afterLoadTemperatureInfo();
                 } else if (data.respCode == '7001') {
+                    alert(data.respMsg);
                     window.location.href = '/TemperatureReporter/loginPage/';
                 } else {
                     alert(data.respMsg);
@@ -316,6 +317,8 @@
                 if (result.respCode == '1000') {
                     alert(result.respMsg);//todo toast
                 } else if (result.respCode == '7001') {
+
+                    alert(result.msg);
                     window.location.href = '/TemperatureReporter/loginPage/';
                 } else {
                     alert(result.respMsg);//todo toast
@@ -352,6 +355,7 @@
                 if (result.respCode == '1000') {
                     alert(result.respMsg);
                 } else if (result.respCode == '7001') {
+                    alert(result.respMsg);
                     window.location.href = '/TemperatureReporter/loginPage/';
                 } else {
                     alert(result.respMsg);
