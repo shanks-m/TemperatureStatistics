@@ -74,11 +74,11 @@ def employeeTemperatureSubmit(request):
     # sessionId = form.cleaned_data['sessionId']
     teamId = form.cleaned_data['teamId']
     employeeId = form.cleaned_data['employeeId']
-    # employeeName = form.cleaned_data['employeeName']
+    employeeName = form.cleaned_data['employeeName']
     temperature = form.cleaned_data['temperature']
     measureTimes = form.cleaned_data['measureTimes']  # 测量第次
     recorderId = form.cleaned_data['recorderId']
-    # recorderName = form.cleaned_data['recorderName']
+    recorderName = form.cleaned_data['recorderName']
     remark = form.cleaned_data['remark']
 
     # 参数不合法（体温和备注不能同时为空）
@@ -90,21 +90,20 @@ def employeeTemperatureSubmit(request):
     try:
         # 1. 校验session
 
-        # 2. 校验当前team当前第次是否已是提交状态，如已提交，则不可继续提交
+        # 2. 校验记录员是否有记录体温权限
+        recorder = Employees.objects.filter(employeeId=recorderId, permission=1)
+        if not recorder.exists():
+            respJson['respCode'] = '1003'
+            respJson['respMsg'] = '无操作权限[TR-1003]'
+            return HttpResponse(json.dumps(respJson))
+
+        # 3. 校验当前team当前第次是否已是提交状态，如已提交，则不可继续提交
         teamSubmitRecord = SubmitRecord.objects.filter(teamId=teamId, submitTimes=measureTimes,
                                                        submitDate=time.strftime('%Y-%m-%d',
                                                                                 time.localtime(time.time())))
         if teamSubmitRecord.exists():
-            respJson['respCode'] = '1003'
-            respJson['respMsg'] = '小组记录已提交[TR-1003]'
-            return HttpResponse(json.dumps(respJson))
-
-        # 3. 校验记录员是否有记录体温权限
-        # 暂时用employeeType字段判断是否是管理员，后期修改
-        recorder = Employees.objects.filter(employeeId=recorderId, employeeType=1)
-        if not recorder.exists():
             respJson['respCode'] = '1004'
-            respJson['respMsg'] = '当前操作员无记录权限[TR-1004]'
+            respJson['respMsg'] = '小组记录已提交[TR-1004]'
             return HttpResponse(json.dumps(respJson))
 
         # 4. 检查当前员工是否存在
@@ -124,28 +123,31 @@ def employeeTemperatureSubmit(request):
             Temperatures.objects.filter(employeeId=employeeId, measureTimes=measureTimes,
                                         measureDate=time.strftime('%Y-%m-%d', time.localtime(time.time()))).update(
                 recorderId=recorderId,
-                # recorderName=recorderName,
+                recorderName=recorderName,
                 remark=remark,
                 temperature=temperature,
                 updatedAt=time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
         else:
             # insert操作
-            Temperatures.objects.create(employeeId=employeeId, employeeName=None,
+            Temperatures.objects.create(employeeId=employeeId,
+                                        employeeName=employeeName,
                                         measureDate=time.strftime('%Y-%m-%d', time.localtime(time.time())),
                                         measureTimes=measureTimes,
                                         temperature=temperature,
                                         createdAt=time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())),
                                         updatedAt=time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())),
-                                        recorderId=recorderId, recorderName=None, remark=remark)
+                                        recorderId=recorderId,
+                                        recorderName=recorderName,
+                                        remark=remark)
 
         return HttpResponse(json.dumps(respJson))
 
     except Exception as e:  # 异常
         logger = logging.getLogger("console")
-        logger.error("employeeTemperatureSubmit erro", e)
-    respJson['respCode'] = '2000'
-    respJson['respMsg'] = '系统异常[TR-2000]'
-    return HttpResponse(json.dumps(respJson))
+        logger.error("employeeTemperatureSubmit error", e)
+        respJson['respCode'] = '2000'
+        respJson['respMsg'] = '系统异常[TR-2000]'
+        return HttpResponse(json.dumps(respJson))
 
 
 # 小组体温数据提交测试页
@@ -176,29 +178,37 @@ def teamTemperatureSubmit(request):
     # sessionId = form.cleaned_data['sessionId']
     teamId = form.cleaned_data['teamId']
     teamName = form.cleaned_data['teamName']
+    recorderId = form.cleaned_data['recorderId']
     measureTimes = form.cleaned_data['measureTimes']  # 测量第次
 
     try:
         # 1. 校验session
 
-        # 2. 校验当前team当前第次是否已是提交状态，如已提交，则不可重复提交
+        # 2. 校验记录员是否有记录体温权限
+        recorder = Employees.objects.filter(employeeId=recorderId, permission=1)
+        if not recorder.exists():
+            respJson['respCode'] = '1003'
+            respJson['respMsg'] = '无操作权限[TR-1003]'
+            return HttpResponse(json.dumps(respJson))
+
+        # 3. 校验当前team当前第次是否已是提交状态，如已提交，则不可重复提交
         teamSubmitRecord = SubmitRecord.objects.filter(teamId=teamId, teamName=teamName, submitTimes=measureTimes,
                                                        submitDate=time.strftime('%Y-%m-%d',
                                                                                 time.localtime(time.time())))
         if teamSubmitRecord.exists():
-            respJson['respCode'] = '1003'
-            respJson['respMsg'] = '小组记录已提交[TR-1003]'
+            respJson['respCode'] = '1004'
+            respJson['respMsg'] = '小组记录已提交[TR-1004]'
             return HttpResponse(json.dumps(respJson))
 
-        # 3. 校验组内成员是否都已提交
-        # 3.1 查找所有组成员
+        # 4 校验组内成员是否都已提交
+        # 4.1 查找所有组成员
         teamMembers = Employees.objects.filter(teamId=teamId, teamName=teamName)
         if not teamMembers.exists():
             respJson['respCode'] = '1004'
             respJson['respMsg'] = '小组不存在[TR-1004]'
             return HttpResponse(json.dumps(respJson))
 
-        # 3.2 查找当前日期 当前第次，员工体温记录是否都存在。都存在，且都合法，才可提交组数据。
+        # 4.2 查找当前日期 当前第次，员工体温记录是否都存在。都存在，且都合法，才可提交组数据。
         isValid = True
         try:
             for member in teamMembers:
@@ -221,7 +231,7 @@ def teamTemperatureSubmit(request):
             respJson['submitStatus'] = 0
             return HttpResponse(json.dumps(respJson))
 
-        # 4. 提交小组体温数据
+        # 5. 提交小组体温数据
         SubmitRecord.objects.create(teamId=teamId, teamName=teamName, submitTimes=measureTimes,
                                     submitDate=time.strftime('%Y-%m-%d', time.localtime(time.time())))
         respJson['submitStatus'] = 1
@@ -261,6 +271,7 @@ def queryTeamTemperatureRecords(request):
 
     # sessionId = form.cleaned_data['sessionId']
     teamId = form.cleaned_data['teamId']
+    recorderId = form.cleaned_data['recorderId']
     measureDate = form.cleaned_data['measureDate']
     measureTimes = form.cleaned_data['measureTimes']  # 测量第次
 
@@ -271,34 +282,41 @@ def queryTeamTemperatureRecords(request):
     try:
         # 1. 校验session
 
-        # 2. 校验小组是否存在
-        teamMembers = Employees.objects.filter(teamId=teamId)
-        if not teamMembers.exists():
-            respJson['respCode'] = '1002'
-            respJson['respMsg'] = '小组不存在[TR-1002]'
+        # 2. 校验记录员是否有记录体温权限
+        recorder = Employees.objects.filter(employeeId=recorderId, permission=1)
+        if not recorder.exists():
+            respJson['respCode'] = '1003'
+            respJson['respMsg'] = '无操作权限[TR-1003]'
             return HttpResponse(json.dumps(respJson))
 
-        # 3. 查询小组成员的体温记录
+        # 3. 校验小组是否存在
+        teamMembers = Employees.objects.filter(teamId=teamId)
+        if not teamMembers.exists():
+            respJson['respCode'] = '1004'
+            respJson['respMsg'] = '小组不存在[TR-1004]'
+            return HttpResponse(json.dumps(respJson))
+
+        # 4. 查询小组成员的体温记录
         hasRecordedMember = []
         notRecordedMember = []
 
         for member in teamMembers:
             dic = {}
             dic['employeeId'] = member.employeeId
-            dic['employeeName'] = member.employeeName
+            # dic['employeeName'] = member.employeeName
             try:
                 employeeSubmitRecord = Temperatures.objects.get(employeeId=member.employeeId,
                                                                 measureTimes=measureTimes, measureDate=measureDate)
                 dic['temperature'] = employeeSubmitRecord.temperature
                 dic['recorderId'] = employeeSubmitRecord.recorderId
-                dic['recorderName'] = employeeSubmitRecord.recorderName
+                # dic['recorderName'] = employeeSubmitRecord.recorderName
                 dic['remark'] = employeeSubmitRecord.remark
                 hasRecordedMember.append(dic)
             except Exception as e:
                 notRecordedMember.append(dic)
         respJson['recordList'] = notRecordedMember + hasRecordedMember  # 数据项排序
 
-        # 4. 查询小组当前第次 当前时间提交状态
+        # 5. 查询小组当前第次 当前时间提交状态
         teamSubmitRecord = SubmitRecord.objects.filter(teamId=teamId, submitTimes=measureTimes, submitDate=measureDate)
         if teamSubmitRecord.exists():
             respJson['submitStatus'] = 1
