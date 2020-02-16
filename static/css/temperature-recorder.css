@@ -5,3 +5,19 @@
     margin-right: auto;
     margin-left: auto;
 }
+
+
+/*modal 相关*/
+.modal-body #temperature {
+    text-align: left;
+    outline: none;
+    width: 200px;
+}
+
+.modal-body #remark {
+    text-align: left;
+    outline: none;
+    vertical-align: top;
+    outline: none;
+    width: 200px;
+}
