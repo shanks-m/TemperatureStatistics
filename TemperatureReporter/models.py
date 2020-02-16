@@ -24,6 +24,7 @@ class Employees(models.Model):
     teamId = models.CharField(max_length=50)
     teamName = models.CharField(max_length=50)
     employeeType = models.IntegerField()
+    permission = models.IntegerField()
 
 
 class SubmitRecord(models.Model):
