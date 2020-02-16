@@ -28,3 +28,15 @@
     padding: 15px;
     margin: auto;
 }
+
+table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+td {
+    width: 25%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
