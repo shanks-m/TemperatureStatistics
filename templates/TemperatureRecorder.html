@@ -249,16 +249,16 @@
 
                         var tr;
                         tr = '<td>' + recordItem.employeeId + '</td>' +
-                            '<td>' + (temperatureRecordedFlag[recordItem.employeeId] ? recordItem.temperature : '未记录') + '</td>' +
-                            '<td>' + (temperatureRecordedFlag[recordItem.employeeId] ? recordItem.remark : '未记录') + '</td>' +
-                            '<td>' + (temperatureRecordedFlag[recordItem.employeeId] ? recordItem.recorderId : '未记录') + '</td>'
+                            '<td>' + (temperatureRecordedFlag[recordItem.employeeId] ? recordItem.temperature : '--') + '</td>' +
+                            '<td>' + (temperatureRecordedFlag[recordItem.employeeId] ? recordItem.remark : '--') + '</td>' +
+                            '<td>' + (temperatureRecordedFlag[recordItem.employeeId] ? recordItem.recorderId : '--') + '</td>'
                         $("#infos tbody").append('<tr>' + tr + '</tr>')
 
                     }
 
                     $('#infos tr').each(function () {
                         var temperature = $(this).find("td:nth-child(2)").text();
-                        if (temperature.indexOf("未记录") > -1) {
+                        if (temperature.indexOf("--") > -1) {
                             $(this).addClass('table-success');
                         }
                     });
