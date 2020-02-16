@@ -53,7 +53,8 @@ def login(request):
 
 
 def TemperatureRecorder(request):
-    return render(request, 'TemperatureRecorder.html')
+    employeeInfo = {'teamId': request.teamId, 'employeeId': request.employeeId}
+    return render(request, 'TemperatureRecorder.html', {'employeeInfo': json.dumps(employeeInfo)})
 
 
 # 员工体温数据提交测试页
