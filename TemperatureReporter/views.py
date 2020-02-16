@@ -1,5 +1,6 @@
 import json
 import time
+import logging
 
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
@@ -28,7 +29,11 @@ def login(request):
         employee = Employees.objects.get(employeeId=request.POST.get('employeeId'))
         if employee.employeePwd == request.POST.get('loginPwd'):
             return JsonResponse(
-                {'respCode': '1000', 'respMsg': '成功', 'teamId': employee.teamId, 'teamName': employee.teamName})
+                {'respCode': '1000',
+                 'respMsg': '成功',
+                 'employeeId': employee.employeeId,
+                 'teamId': employee.teamId,
+                 'teamName': employee.teamName})
         else:
             s = '密码错误'
             return JsonResponse({'respCode': '1001', 'respMsg': s})
@@ -69,11 +74,11 @@ def employeeTemperatureSubmit(request):
     # sessionId = form.cleaned_data['sessionId']
     teamId = form.cleaned_data['teamId']
     employeeId = form.cleaned_data['employeeId']
-    employeeName = form.cleaned_data['employeeName']
+    # employeeName = form.cleaned_data['employeeName']
     temperature = form.cleaned_data['temperature']
     measureTimes = form.cleaned_data['measureTimes']  # 测量第次
     recorderId = form.cleaned_data['recorderId']
-    recorderName = form.cleaned_data['recorderName']
+    # recorderName = form.cleaned_data['recorderName']
     remark = form.cleaned_data['remark']
 
     # 参数不合法（体温和备注不能同时为空）
@@ -119,26 +124,28 @@ def employeeTemperatureSubmit(request):
             Temperatures.objects.filter(employeeId=employeeId, measureTimes=measureTimes,
                                         measureDate=time.strftime('%Y-%m-%d', time.localtime(time.time()))).update(
                 recorderId=recorderId,
-                recorderName=recorderName,
+                # recorderName=recorderName,
                 remark=remark,
                 temperature=temperature,
                 updatedAt=time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
         else:
             # insert操作
-            Temperatures.objects.create(employeeId=employeeId, employeeName=employeeName,
+            Temperatures.objects.create(employeeId=employeeId, employeeName=None,
                                         measureDate=time.strftime('%Y-%m-%d', time.localtime(time.time())),
                                         measureTimes=measureTimes,
                                         temperature=temperature,
                                         createdAt=time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())),
                                         updatedAt=time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())),
-                                        recorderId=recorderId, recorderName=recorderName, remark=remark)
+                                        recorderId=recorderId, recorderName=None, remark=remark)
 
         return HttpResponse(json.dumps(respJson))
 
     except Exception as e:  # 异常
-        respJson['respCode'] = '2000'
-        respJson['respMsg'] = '系统异常[TR-2000]'
-        return HttpResponse(json.dumps(respJson))
+        logger = logging.getLogger("console")
+        logger.error("employeeTemperatureSubmit erro", e)
+    respJson['respCode'] = '2000'
+    respJson['respMsg'] = '系统异常[TR-2000]'
+    return HttpResponse(json.dumps(respJson))
 
 
 # 小组体温数据提交测试页
