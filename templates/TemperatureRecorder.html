@@ -297,8 +297,9 @@
             return;
         }
 
-        if($('#recordModal #temperature')[0].value && $('#recordModal #remark')[0].value) {
+        if (!$('#recordModal #temperature')[0].value && !$('#recordModal #remark')[0].value) {
             alert("请至少输入温度和备注中的一个值！");
+            return;
         }
 
         var data = {
