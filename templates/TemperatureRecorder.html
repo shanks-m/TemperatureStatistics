@@ -297,6 +297,10 @@
             return;
         }
 
+        if($('#recordModal #temperature')[0].value && $('#recordModal #remark')[0].value) {
+            alert("请至少输入温度和备注中的一个值！");
+        }
+
         var data = {
             {#"sessionId": "??",#}
             "employeeId": $('#recordModal #employeeId')[0].innerText,
