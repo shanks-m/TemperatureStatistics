@@ -63,13 +63,14 @@
                     dataType: 'json',//数据类型
                     type: 'Post',//类型
                     data: $('#form1').serialize(),
-                    timeout: 2000,//超时
+                    timeout: 20000,//超时
                     //请求成功
                     success: function (result) {
                         if (result.respCode == '1000') {
                             sessionStorage["teamId"] = result.teamId;
                             sessionStorage["teamName"] = result.teamName;
                             sessionStorage["employeeId"] = result.employeeId;
+                            setCookie('sessionId',result.sessionId)
                             window.location.href='/TemperatureReporter/temperatureRecorderPage/';
                         }
                         else {
@@ -82,11 +83,19 @@
                             alert('请求超時');
                             setTimeout(function () {
                                 alert('重新请求');
-                            }, 2000);
+                            }, 20000);
                         }
                         //alert(errorThrown);
                     }
                 })
+            }
+        }
+        function setCookie(name, value) {
+            if (value) {
+                var days = 1; //定义一天
+                var exp = new Date();
+                exp.setTime(exp.getTime() + days * 24 * 60 * 60 * 1000);
+                document.cookie = name + "=" + value + ";expires=" + exp.toGMTString;
             }
         }
         function NotNull() {
