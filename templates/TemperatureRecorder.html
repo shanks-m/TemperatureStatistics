@@ -50,7 +50,7 @@
            cellpadding="100rem">
         <thead class=" .thead-light">
         <tr>
-            <th scope="col">员编</th>
+            <th scope="col">姓名</th>
             <th scope="col">体温</th>
             <th scope="col">备注</th>
             <th scope="col">记录人</th>
@@ -76,9 +76,9 @@
 
                 <form class="modal-form">
                     <div class="form-group row">
-                        <label for="employeeId" class="col-xs-2 col-form-label">员编：</label>
+                        <label for="employeeName" class="col-xs-2 col-form-label">姓名：</label>
                         <div class="col-xs-10">
-                            <label type="text" readonly class="form-control-plaintext" id="employeeId"
+                            <label type="text" readonly class="form-control-plaintext" id="employeeName"
                                    value="6位员编"/>
                         </div>
                     </div>
@@ -94,6 +94,13 @@
                         <label class="col-xs-2  col-form-label" for="remark">备注：</label>
                         <textarea class=" col-xs-10 form-control" id="remark" placeholder="请输入备注" rows="3"
                                   maxlength="512"></textarea>
+                    </div>
+                    <div class="form-group row">
+                        <label for="recorderName" class="col-xs-2 col-form-label">记录人：</label>
+                        <div class="col-xs-10">
+                            <label type="text" readonly class="form-control-plaintext" id="recorderName"
+                                   value="记录人"/>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -191,7 +198,8 @@
         {#var button = $(event.relatedTarget) // Button that triggered the modal#}
         {#var recipient = button.data('whatever') // Extract info from data-* attributes#}
 
-        $('#recordModal #employeeId')[0].innerText = activetedItemInfo.employeeId;
+        $('#recordModal #employeeName')[0].innerText = activetedItemInfo.employeeName;
+        $('#recordModal #recorderName')[0].innerText = temperatureRecordedFlag[activetedItemInfo.employeeId] ? activetedItemInfo.recorderName : employeeInfo.employeeName;
         $('#recordModal #temperature')[0].value = temperatureRecordedFlag[activetedItemInfo.employeeId] ? activetedItemInfo.temperature : '';
         $('#recordModal #remark')[0].value = temperatureRecordedFlag[activetedItemInfo.employeeId] ? activetedItemInfo.remark : '';
 
@@ -205,7 +213,8 @@
     })
 
     $('#recordModal').on('hidden.bs.modal', function (event) {
-        $('#recordModal #employeeId')[0].innerText = '';
+        $('#recordModal #employeeName')[0].innerText = '';
+        $('#recordModal #recorderName')[0].innerText = '';
         $('#recordModal #temperature')[0].value = '';
         $('#recordModal #remark')[0].value = '';
 
@@ -243,10 +252,10 @@
                         }
 
                         var tr;
-                        tr = '<td>' + recordItem.employeeId + '</td>' +
+                        tr = '<td>' + recordItem.employeeName + '</td>' +
                             '<td>' + (temperatureRecordedFlag[recordItem.employeeId] ? recordItem.temperature : '--') + '</td>' +
                             '<td>' + (temperatureRecordedFlag[recordItem.employeeId] ? recordItem.remark : '--') + '</td>' +
-                            '<td>' + (temperatureRecordedFlag[recordItem.employeeId] ? recordItem.recorderId : '--') + '</td>'
+                            '<td>' + (temperatureRecordedFlag[recordItem.employeeId] ? recordItem.recorderName : '--') + '</td>'
                         $("#infos tbody").append('<tr>' + tr + '</tr>')
 
                     }
@@ -302,9 +311,10 @@
 
         var data = {
             {#"sessionId": "??",#}
-            "employeeId": $('#recordModal #employeeId')[0].innerText,
+            "employeeName": $('#recordModal #employeeName')[0].innerText,
+            "employeeId": activetedItemInfo.employeeId,
             'teamId': employeeInfo["teamId"],
-            {#"employeeName": "",#}
+            "recorderName": employeeInfo["employeeName"],
             "temperature": $('#recordModal #temperature')[0].value,
             "measureTimes": measureTimes,
             "recorderId": employeeInfo["employeeId"],
