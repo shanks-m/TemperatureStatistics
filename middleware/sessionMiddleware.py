@@ -8,7 +8,10 @@ class sessionMiddleware(MiddlewareMixin):
 
         # 统一验证登录
         # return None或者不写就不执行以后的操作
-        if request.path == '/TemperatureReporter/' or request.path == '/TemperatureReporter/loginPage/' or request.path == '/TemperatureReporter/login/':
+        if request.path == '/TemperatureReporter/' \
+                or request.path == '/TemperatureReporter/loginPage/' \
+                or request.path == '/TemperatureReporter/getDailyReport/' \
+                or request.path == '/TemperatureReporter/login/':
             return None
 
         sessionId = request.COOKIES.get('sessionId')

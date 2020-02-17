@@ -10,4 +10,5 @@ urlpatterns = [
     path('login/', views.login, name='login'),
     path('queryTeamTemperatureRecords', views.queryTeamTemperatureRecords, name='queryTeamTemperatureRecords'),
     path('temperatureRecorderPage/', views.TemperatureRecorder, name='TemperatureRecorder'),
+    path('getDailyReport/', views.GetDailyReport, name='TemperatureRecorder'),
 ]

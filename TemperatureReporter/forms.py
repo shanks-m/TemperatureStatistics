@@ -29,3 +29,5 @@ class QueryTeamTemperatureRecordsForm(forms.Form):
     recorderId = forms.CharField(max_length=15)
     measureDate = forms.CharField(required=False)
     measureTimes = forms.CharField(max_length=11)
+
+
