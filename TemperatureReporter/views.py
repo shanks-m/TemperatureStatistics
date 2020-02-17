@@ -104,7 +104,7 @@ def GetDailyReport(request):
         'attachment; filename= "DailyReport(' + resultDate.__format__('%Y%m%d') + '-'+ nowDate.__format__('%Y%m%d') + ').csv"'
 
     writer = csv.writer(response)
-    writer.writerow([u'员编', u'姓名', u'上午体温', u'下午体温'])
+    writer.writerow([u'测量日期', u'员编', u'姓名', u'上午体温', u'下午体温'])
     for row in records:
         writer.writerow(row)
 
