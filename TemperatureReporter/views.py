@@ -31,7 +31,7 @@ def login(request):
             tmpid = ''.join(uid.split('-'))
             session = Session()
             session.createdAt = datetime.datetime.now()
-            session.expireAt = session.createdAt + datetime.timedelta(minutes=15)
+            session.expireAt = session.createdAt + datetime.timedelta(minutes=60)
             session.sessionId = tmpid
             session.employeeId = employee.employeeId
             session.save()
@@ -56,7 +56,10 @@ def login(request):
 
 
 def TemperatureRecorder(request):
-    employeeInfo = {'teamId': request.teamId, 'employeeId': request.employeeId}
+    employeeInfo = {'teamId': request.teamId,
+                    'employeeId': request.employeeId,
+                    'employeeName': request.employeeName,
+                    'teamName': request.teamName}
     return render(request, 'TemperatureRecorder.html', {'employeeInfo': json.dumps(employeeInfo)})
 
 
