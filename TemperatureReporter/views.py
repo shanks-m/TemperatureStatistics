@@ -81,15 +81,16 @@ def GetDailyReport(request):
     # 查询结果
     cursor = connection.cursor()
     sql = '''
-        SELECT result1.employeeId, result1.employeeName,  result1.temperature, temp2.temperature FROM (
-            SELECT emp.employeeId, emp.employeeName, temp1.temperature FROM TemperatureReporter_employees emp
+        SELECT result1.measureDate, result1.employeeId, result1.employeeName,  result1.temperature, temp2.temperature FROM (
+            SELECT temp1.measureDate, emp.employeeId, emp.employeeName, temp1.temperature FROM TemperatureReporter_employees emp
                 LEFT JOIN TemperatureReporter_temperatures temp1 ON emp.employeeId = temp1.employeeId
                 WHERE emp.teamId not in ('DEVmenhu01', 'DEVmenhu01')
-                AND temp1.measureDate >= %s
+                AND temp1.measureDate = %s
                 AND temp1.measureTimes = '1'
             ) result1
-        LEFT JOIN  TemperatureReporter_temperatures temp2 ON result1.employeeId = temp2.employeeId
-        AND measureTimes ='2'
+        LEFT JOIN  TemperatureReporter_temperatures temp2 
+        ON (result1.employeeId = temp2.employeeId AND result1.measureDate = temp2.measureDate)
+        AND temp2.measureTimes ='2'
             '''
 
     nowDate = datetime.datetime.now().date()
@@ -101,7 +102,7 @@ def GetDailyReport(request):
     # 创建 HttpResponse
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = \
-        'attachment; filename= "DailyReport(' + resultDate.__format__('%Y%m%d') + '-'+ nowDate.__format__('%Y%m%d') + ').csv"'
+        'attachment; filename= "DailyReport(' + resultDate.__format__('%Y%m%d') + ').csv"'
 
     writer = csv.writer(response)
     writer.writerow([u'测量日期', u'员编', u'姓名', u'上午体温', u'下午体温'])
