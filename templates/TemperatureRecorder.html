@@ -111,10 +111,11 @@
 <script src="{% static 'bootstrap/js/bootstrap.min.js' %}" type="text/javascript"></script>
 
 <script type="text/javascript">
+    var employeeInfo = {{ employeeInfo|safe }};
 
     initEmployee = function () {
-        var employeeId = sessionStorage["employeeId"];
-        var teamName = sessionStorage["teamName"];
+        var employeeId = employeeInfo["employeeId"];
+        var teamName = employeeInfo["teamName"];
         $("#employee-id-team-name")[0].innerText = employeeId + ' | ' + teamName;
     };
 
@@ -212,7 +213,6 @@
     })
 
     loadTemperatureInfos = function () {
-        {#var employeeInfo = {{ employeeInfo|safe }};#}
         $.ajax({
             url: '/TemperatureReporter/queryTeamTemperatureRecords',
             type: 'post',
@@ -221,8 +221,8 @@
                 {#'sessionId': '??',#}
                 'date': $('#measureDate').val(),
                 'measureTimes': measureTimes,
-                'teamId': sessionStorage["teamId"],
-                'recorderId': sessionStorage["employeeId"]
+                'teamId': employeeInfo["teamId"],
+                'recorderId': employeeInfo["employeeId"]
             },
             success: function (data) {
                 if (data.respCode == '1000') {
@@ -303,11 +303,11 @@
         var data = {
             {#"sessionId": "??",#}
             "employeeId": $('#recordModal #employeeId')[0].innerText,
-            'teamId': sessionStorage["teamId"],
+            'teamId': employeeInfo["teamId"],
             {#"employeeName": "",#}
             "temperature": $('#recordModal #temperature')[0].value,
             "measureTimes": measureTimes,
-            "recorderId": sessionStorage["employeeId"],
+            "recorderId": employeeInfo["employeeId"],
             "remark": $('#recordModal #remark')[0].value
         };
         $.ajax({
@@ -343,9 +343,9 @@
     $('#submitGroupBtnStatus').on('click', function () {
         var data = {
             {#"sessionId": "??",#}
-            'teamId': sessionStorage["teamId"],
-            'teamName': sessionStorage["teamName"],
-            'recorderId': sessionStorage["employeeId"],
+            'teamId': employeeInfo["teamId"],
+            'teamName': employeeInfo["teamName"],
+            'recorderId': employeeInfo["employeeId"],
             "measureTimes": measureTimes
         };
         $.ajax({

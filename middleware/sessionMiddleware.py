@@ -26,7 +26,7 @@ class sessionMiddleware(MiddlewareMixin):
                 return JsonResponse({'respMsg': '登录已过期，请重新登录', 'respCode': '7001'})
 
             session.updatedAt = datetime.datetime.now()
-            session.expireAt = session.updatedAt + datetime.timedelta(minutes=15)
+            session.expireAt = session.updatedAt + datetime.timedelta(minutes=60)
             session.save()
         except Exception as e:
             return JsonResponse({'respMsg': '登录已过期，请重新登录', 'respCode': '7001'})
@@ -35,3 +35,5 @@ class sessionMiddleware(MiddlewareMixin):
         employee = Employees.objects.get(employeeId=session.employeeId)
         request.teamId = employee.teamId
         request.teamName = employee.teamName
+        if employee.employeeName:
+            request.employeeName = employee.employeeName
