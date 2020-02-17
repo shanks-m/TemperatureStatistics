@@ -303,6 +303,7 @@ def queryTeamTemperatureRecords(request):
         # 4. 查询小组成员的体温记录
         hasRecordedMember = []
         notRecordedMember = []
+        problematicalMember = []
 
         for member in teamMembers:
             dic = {}
@@ -315,10 +316,13 @@ def queryTeamTemperatureRecords(request):
                 dic['recorderId'] = employeeSubmitRecord.recorderId
                 dic['recorderName'] = employeeSubmitRecord.recorderName
                 dic['remark'] = employeeSubmitRecord.remark
-                hasRecordedMember.append(dic)
+                if eval(employeeSubmitRecord.temperature) < 37:
+                    hasRecordedMember.append(dic)
+                else:
+                    problematicalMember.append(dic)
             except Exception as e:
                 notRecordedMember.append(dic)
-        respJson['recordList'] = notRecordedMember + hasRecordedMember  # 数据项排序
+        respJson['recordList'] = problematicalMember + notRecordedMember + hasRecordedMember  # 数据项排序
 
         # 5. 查询小组当前第次 当前时间提交状态
         teamSubmitRecord = SubmitRecord.objects.filter(teamId=teamId, submitTimes=measureTimes, submitDate=measureDate)
