@@ -307,13 +307,13 @@ def queryTeamTemperatureRecords(request):
         for member in teamMembers:
             dic = {}
             dic['employeeId'] = member.employeeId
-            # dic['employeeName'] = member.employeeName
+            dic['employeeName'] = member.employeeName
             try:
                 employeeSubmitRecord = Temperatures.objects.get(employeeId=member.employeeId,
                                                                 measureTimes=measureTimes, measureDate=measureDate)
                 dic['temperature'] = employeeSubmitRecord.temperature
                 dic['recorderId'] = employeeSubmitRecord.recorderId
-                # dic['recorderName'] = employeeSubmitRecord.recorderName
+                dic['recorderName'] = employeeSubmitRecord.recorderName
                 dic['remark'] = employeeSubmitRecord.remark
                 hasRecordedMember.append(dic)
             except Exception as e:
