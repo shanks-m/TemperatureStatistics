@@ -40,12 +40,12 @@
                 </div>
                 <div class="col-xs-1" style="">
                     <button id="submitGroupBtnStatus" type="button" class="btn btn-secondary "></button>
-{#                    <button type="button" class="btn btn-sm btn-secondary btn-circle" data-container="body"#}
-{#                            data-toggle="po"#}
-{#                            data-placement="left"#}
-{#                            data-content="请录入所有员工温度信息后提交，并且温度和备注至少填写一个"#}
-{#                            style="background-image: url({% static '/img/question.png' %})">#}
-{#                    </button>#}
+                    {#                    <button type="button" class="btn btn-sm btn-secondary btn-circle" data-container="body"#}
+                    {#                            data-toggle="po"#}
+                    {#                            data-placement="left"#}
+                    {#                            data-content="请录入所有员工温度信息后提交，并且温度和备注至少填写一个"#}
+                    {#                            style="background-image: url({% static '/img/question.png' %})">#}
+                    {#                    </button>#}
                 </div>
             </div>
 
@@ -388,8 +388,8 @@
             data: data,
             success: function (result) {
                 if (result.respCode == '1000') {
-                    $('.toast-body')[0].innerText = '用户' + activetedItemInfo.employeeName + '，信息录入成功~';
-                    $('.toast-body').toast('show');
+                    $('.toast-body')[0].innerText = '小组信息提交成功';
+                    $('.toast').toast('show');
                 } else if (result.respCode == '7001') {
                     alert(result.respMsg);
                     window.location.href = '/TemperatureReporter/loginPage/';
