@@ -9,6 +9,7 @@ urlpatterns = [
     path('teamTemperatureSubmit', views.teamTemperatureSubmit, name='teamTemperatureSubmit'),
     path('login/', views.login, name='login'),
     path('queryTeamTemperatureRecords', views.queryTeamTemperatureRecords, name='queryTeamTemperatureRecords'),
-    path('temperatureRecorderPage/', views.TemperatureRecorder, name='TemperatureRecorder'),
-    path('getDailyReport/', views.GetDailyReport, name='TemperatureRecorder'),
+    path('temperatureRecorderPage/', views.TemperatureRecorder, name='temperatureRecorder'),
+    path('getDailyReport/', views.GetDailyReport, name='getDailyReport'),
+    path('getSubmitGroupInfo/', views.GetSubmitGroupInfo, name='getSubmitGroupInfo'),
 ]

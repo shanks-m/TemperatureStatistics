@@ -12,6 +12,7 @@ from TemperatureReporter.models import Employees, Temperatures, SubmitRecord, Se
 from django.db import connection
 import csv
 
+
 # Create your views here.
 
 def loginPage(request):
@@ -63,7 +64,7 @@ def TemperatureRecorder(request):
                     'teamName': request.teamName}
     return render(request, 'TemperatureRecorder.html', {'employeeInfo': json.dumps(employeeInfo)})
 
-
+# 获取每日报表
 def GetDailyReport(request):
     respJson = {}
     respJson['respCode'] = '1000'
@@ -84,13 +85,13 @@ def GetDailyReport(request):
         SELECT result1.measureDate, result1.employeeId, result1.employeeName,  result1.temperature, temp2.temperature FROM (
             SELECT temp1.measureDate, emp.employeeId, emp.employeeName, temp1.temperature FROM TemperatureReporter_employees emp
                 LEFT JOIN TemperatureReporter_temperatures temp1 ON emp.employeeId = temp1.employeeId
-                WHERE emp.teamId not in ('DEVmenhu01', 'DEVmenhu01')
+                WHERE emp.teamId not in ('DEVmenhu01', 'DEVmenhu02')
                 AND temp1.measureDate = %s
                 AND temp1.measureTimes = '1'
             ) result1
         LEFT JOIN  TemperatureReporter_temperatures temp2 
         ON (result1.employeeId = temp2.employeeId AND result1.measureDate = temp2.measureDate)
-        AND temp2.measureTimes ='2'
+        AND temp2.measureTimes ='2' ORDER BY result1.employeeId
             '''
 
     nowDate = datetime.datetime.now().date()
@@ -100,12 +101,61 @@ def GetDailyReport(request):
     records = cursor.fetchall()
 
     # 创建 HttpResponse
-    response = HttpResponse(content_type='text/csv')
+    response = HttpResponse(content_type='text/csv;charset=UTF-8')
     response['Content-Disposition'] = \
         'attachment; filename= "DailyReport(' + resultDate.__format__('%Y%m%d') + ').csv"'
 
     writer = csv.writer(response)
     writer.writerow([u'测量日期', u'员编', u'姓名', u'上午体温', u'下午体温'])
+    for row in records:
+        writer.writerow(row)
+
+    return response
+
+# 获取组提交信息
+def GetSubmitGroupInfo(request):
+    respJson = {}
+    respJson['respCode'] = '1000'
+    respJson['respMsg'] = '提交成功'
+
+    tokenId = request.GET.get('tokenId', default='')
+    n = request.GET.get('n', default=0)
+
+    # 参数校验
+    if tokenId != 'b87dc490-519b-11ea-8d77-2e728ce88125':
+        respJson['respCode'] = '1002'
+        respJson['respMsg'] = u'参数不合法[TR-1002]'
+        return HttpResponse(json.dumps(respJson))
+
+    # 查询结果
+    cursor = connection.cursor()
+    sql = '''
+        select result1.submitDate, result1.teamName, result1.submitTimes,record2.submitTimes  from
+            (SELECT record.submitDate,team1.teamName, team1.teamId ,record.submitTimes from
+                (select distinct emp.teamId, emp.teamName  FROM TemperatureReporter_employees emp
+                        WHERE emp.teamId not in ('DEVmenhu01', 'DEVmenhu02') ) team1
+                LEFT JOIN TemperatureReporter_submitrecord record ON team1.teamId = record.teamId
+                AND record.submitDate =  %s
+                AND record.submitTimes = '1'
+            ) result1
+        LEFT JOIN  TemperatureReporter_submitrecord record2
+        ON (result1.teamId = record2.teamId AND result1.submitDate = record2.submitDate)
+        AND record2.submitTimes ='2' ORDER BY result1.teamName
+            '''
+
+    nowDate = datetime.datetime.now().date()
+    delta = datetime.timedelta(days=int(n))
+    resultDate = nowDate - delta
+    cursor.execute(sql, resultDate)
+    records = cursor.fetchall()
+
+    # 创建 HttpResponse
+    response = HttpResponse(content_type='text/csv;charset=UTF-8')
+    response['Content-Disposition'] = \
+        'attachment; filename= "TeamReport(' + resultDate.__format__('%Y%m%d') + ').csv"'
+
+    writer = csv.writer(response)
+    writer.writerow([u'测量日期', u'组', u'提交次数', u'提交次数'])
     for row in records:
         writer.writerow(row)
 

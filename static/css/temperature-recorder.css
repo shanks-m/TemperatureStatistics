@@ -11,13 +11,14 @@
 .modal-body #temperature {
     text-align: left;
     outline: none;
-    /*width: 200px;*/
+    width: 100%;
 }
 
 .modal-body #remark {
     text-align: left;
     outline: none;
     vertical-align: top;
+    width: 100%;
     outline: none;
 }
 

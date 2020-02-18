@@ -77,12 +77,12 @@
 
 
 <!-- 模态框（Modal） -->
-<div class="modal fade" id="recordModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+<div class="modal fade" id="recordModal" tabindex="-1" role="dialog" aria-labelledby="recordModalLabel"
      aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title align-middle" id="myModalLabel">温度录入</h4>
+                <h4 class="modal-title align-middle" id="recordModalLabel">温度录入</h4>
             </div>
             <div class="modal-body">
 
@@ -98,14 +98,15 @@
                         <label for="temperature" class="col-xs-2 col-form-label">体温：</label>
                         <div class="col-xs-12">
                             <input type="number" class="form-control" id="temperature" placeholder="请输入体温（1位小数）"
-                                   maxlength="5">
+                                   maxlength="5" onblur="scrollToTop()">
                         </div>
                     </div>
 
                     <div class="form-group row">
                         <label class="col-xs-2  col-form-label" for="remark">备注：</label>
                         <div class="col-xs-12">
-                            <textarea class="form-control" id="remark" placeholder="请输入备注" rows="3" maxlength="512">
+                            <textarea class="form-control" id="remark" placeholder="请输入备注" rows="3" maxlength="512"
+                            onblur="scrollToTop()">
                             </textarea>
                         </div>
                     </div>
@@ -121,6 +122,25 @@
             <div class="modal-footer">
                 <button type="button" data-dismiss="modal" class="btn btn-secondary">关闭</button>
                 <button id="submitEmployeeInfo" type="button" data-dismiss="modal" class="btn btn-success">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 提交组信息模态框（Modal） -->
+<div class="modal fade" id="submitGroupModal" tabindex="-1" role="dialog" aria-labelledby="submitGroupModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title align-middle" id="submitGroupModalLabel">提交后不可更改，确定提交？</h4>
+            </div>
+            {#            <div class="modal-body">#}
+            {#            </div>#}
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-secondary">关闭</button>
+                <button id="submitGroupBtn" type="button" data-dismiss="modal" class="btn btn-success">确定</button>
             </div>
         </div>
     </div>
@@ -224,6 +244,7 @@
         } else {
             $('#recordModal #temperature').prop('disabled', false);
             $('#recordModal #remark').prop('disabled', false);
+            $("#submitEmployeeInfo").show();
         }
     })
 
@@ -373,7 +394,8 @@
         })
     });
 
-    $('#submitGroupBtnStatus').on('click', function () {
+    $('#submitGroupModal #submitGroupBtn').on('click', function () {
+
         var data = {
             {#"sessionId": "??",#}
             'teamId': employeeInfo["teamId"],
@@ -412,13 +434,17 @@
         })
     })
 
-    $('.recordModal input').blur(function scrollToTop() {
+    $('#submitGroupBtnStatus').on('click', function () {
+        $('#submitGroupModal').modal('show')
+    })
+
+    function scrollToTop() {
         var sTop = document.documentElement.scrollTop || document.body.scrollTop;
         if (sTop > 0) {
-            window.requestAnimationFrame(scrollToTop);
+            {#window.requestAnimationFrame(scrollToTop);#}
             window.scrollTo(0, sTop - sTop / 10);
         }
-    })
+    }
 
     var initData = function () {
         initMeasureDate();
