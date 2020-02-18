@@ -82,8 +82,8 @@ def GetDailyReport(request):
     # 查询结果
     cursor = connection.cursor()
     sql = '''
-        SELECT result1.measureDate, result1.employeeId, result1.employeeName,  result1.temperature, temp2.temperature FROM (
-            SELECT temp1.measureDate, emp.employeeId, emp.employeeName, temp1.temperature FROM TemperatureReporter_employees emp
+        SELECT result1.measureDate, result1.employeeId, result1.employeeName,  result1.temperature, result1.remark, temp2.temperature, temp2.remark FROM (
+            SELECT temp1.measureDate, emp.employeeId, emp.employeeName, temp1.temperature,temp1.remark FROM TemperatureReporter_employees emp
                 LEFT JOIN TemperatureReporter_temperatures temp1 ON emp.employeeId = temp1.employeeId
                 WHERE emp.teamId not in ('DEVmenhu01', 'DEVmenhu02')
                 AND temp1.measureDate = %s
@@ -106,7 +106,7 @@ def GetDailyReport(request):
         'attachment; filename= "DailyReport(' + resultDate.__format__('%Y%m%d') + ').csv"'
 
     writer = csv.writer(response)
-    writer.writerow([u'测量日期', u'员编', u'姓名', u'上午体温', u'下午体温'])
+    writer.writerow([u'测量日期', u'员编', u'姓名', u'上午体温', u'上午备注', u'下午体温', u'下午备注'])
     for row in records:
         writer.writerow(row)
 
